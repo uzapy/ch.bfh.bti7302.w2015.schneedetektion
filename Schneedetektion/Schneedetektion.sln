@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.ImageMove", "Schneedetektion.ImageMove\Schneedetektion.ImageMove.csproj", "{4A54F2F5-0FD7-422A-8F83-8857D361A251}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.GatherData", "Schneedetektion.GatherData\Schneedetektion.GatherData.csproj", "{AD7A6D25-239A-473A-AC56-35103429FD3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4A54F2F5-0FD7-422A-8F83-8857D361A251}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A54F2F5-0FD7-422A-8F83-8857D361A251}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A54F2F5-0FD7-422A-8F83-8857D361A251}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD7A6D25-239A-473A-AC56-35103429FD3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD7A6D25-239A-473A-AC56-35103429FD3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD7A6D25-239A-473A-AC56-35103429FD3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD7A6D25-239A-473A-AC56-35103429FD3E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

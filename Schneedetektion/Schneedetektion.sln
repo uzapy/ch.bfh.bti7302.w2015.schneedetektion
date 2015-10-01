@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.ImageMove",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.GatherData", "Schneedetektion.GatherData\Schneedetektion.GatherData.csproj", "{AD7A6D25-239A-473A-AC56-35103429FD3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Schneedetektion.ImagePlayGround", "Schneedetektion.ImagePlayGround\Schneedetektion.ImagePlayGround.csproj", "{ABC70135-32E7-4F64-BEA0-89ED6508A31A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AD7A6D25-239A-473A-AC56-35103429FD3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD7A6D25-239A-473A-AC56-35103429FD3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD7A6D25-239A-473A-AC56-35103429FD3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABC70135-32E7-4F64-BEA0-89ED6508A31A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABC70135-32E7-4F64-BEA0-89ED6508A31A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABC70135-32E7-4F64-BEA0-89ED6508A31A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABC70135-32E7-4F64-BEA0-89ED6508A31A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

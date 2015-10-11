@@ -14,26 +14,36 @@
 
         <GroupBox x:Name="groupBox1" Header="By time" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top">
             <StackPanel>
-			 <xceed:TimePicker x:Name="timePicker" Width="100" TabIndex="2" LostFocus="timePicker_LostFocus" />
+                <xceed:TimePicker x:Name="timePicker" Width="100" TabIndex="2" LostFocus="timePicker_LostFocus" />
             </StackPanel>
         </GroupBox>
         <GroupBox x:Name="groupBox2" Header="By camera" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top">
             <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="224" Margin="0,0,0,0" Width="100" TabIndex="4" SelectionMode="Multiple" SelectionChanged="listBox_SelectionChanged" />
         </GroupBox>
         <GroupBox x:Name="groupBox3" Header="Size" HorizontalAlignment="Left" Margin="10,362,0,0" VerticalAlignment="Top">
-            <Slider x:Name="slider" HorizontalAlignment="Left" Width="100" VerticalAlignment="Top" TabIndex="5" Maximum="300" Minimum="50" LargeChange="1" Value="50"/>
+            <Slider x:Name="slider0" HorizontalAlignment="Left" Width="100" VerticalAlignment="Top" TabIndex="5" Maximum="400" Minimum="50" LargeChange="1" Value="50"/>
         </GroupBox>
-        <ListView x:Name="imageContainer" Margin="128,10,10.333,9.667" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Image Source="{Binding UriSource}" Width="{Binding ElementName=slider, Path=Value}" />
-			 </DataTemplate>
-		  </ListView.ItemTemplate>
-        </ListView>
+        <TabControl Margin="128,10,10.333,9.667">
+            <TabItem Header="Gallery">
+                <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding UriSource}" Width="{Binding ElementName=slider0, Path=Value}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+            <TabItem Header="Time-Lapse">
+                <StackPanel>
+                    <Slider x:Name="slider1" Margin="0,0,0,0" Height="21" VerticalAlignment="Top"/>
+                    <Image x:Name="timeLapesImage" Width="{Binding ElementName=slider0, Path=Value}" />
+                </StackPanel>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

@@ -16,6 +16,7 @@ namespace Schneedetektion.ImagePlayGround
 	   private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
 	   private IEnumerable<Image> imageNames = new List<Image>();
 	   private ObservableCollection<BitmapImage> images = new ObservableCollection<BitmapImage>();
+	   private BitmapImage currentTimeLapseImage = new BitmapImage();
 
 	   private int year = 2014;
 	   private int month = 12;
@@ -40,8 +41,10 @@ namespace Schneedetektion.ImagePlayGround
 			 images.Add(GetBitmap(imageName));
 		  }
 
+		  timeLapesImage.Source = images.First();
         }
 
+	   #region Event Handler
 	   private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
 	   {
 		  hasDate = datePicker.SelectedDate.HasValue;
@@ -51,7 +54,7 @@ namespace Schneedetektion.ImagePlayGround
 			 year = datePicker.SelectedDate.Value.Year;
 			 month = datePicker.SelectedDate.Value.Month;
 			 day = datePicker.SelectedDate.Value.Day;
-            }
+		  }
 
 		  ReloadImages();
 	   }
@@ -64,7 +67,7 @@ namespace Schneedetektion.ImagePlayGround
 		  {
 			 hour = timePicker.Value.Value.Hour;
 			 minute = timePicker.Value.Value.Minute - (timePicker.Value.Value.Minute % 10);
-            }
+		  }
 
 		  ReloadImages();
 	   }
@@ -80,9 +83,29 @@ namespace Schneedetektion.ImagePlayGround
 		  else
 		  {
 			 selectedCameras = listBox.SelectedItems.OfType<string>().ToList();
-            }
+		  }
 
 		  ReloadImages();
+	   }
+	   #endregion
+
+	   #region Helper Method
+	   private void ReloadImages()
+	   {
+		  imageNames = (from i in dataContext.Images
+					 where i.DateTime.Year == year || !hasDate
+					 where i.DateTime.Month == month || !hasDate
+					 where i.DateTime.Day == day || !hasDate
+					 where i.DateTime.Hour == hour || !hasTime
+					 where i.DateTime.Minute == minute || !hasTime
+					 where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
+					 select i).Take(512);
+
+		  images.Clear();
+		  foreach (Image imageName in imageNames)
+		  {
+			 images.Add(GetBitmap(imageName));
+		  }
 	   }
 
 	   private BitmapImage GetBitmap(Image image)
@@ -95,25 +118,7 @@ namespace Schneedetektion.ImagePlayGround
 		  {
 			 return new BitmapImage();
 		  }
-        }
-
-	   private void ReloadImages()
-	   {
-		  imageNames = (from i in dataContext.Images
-					   where i.DateTime.Year == year || !hasDate
-					   where i.DateTime.Month == month || !hasDate
-					   where i.DateTime.Day == day || !hasDate
-					   where i.DateTime.Hour == hour || !hasTime
-					   where i.DateTime.Minute == minute || !hasTime
-					   where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
-					   select i).Take(512);
-
-
-		  images.Clear();
-		  foreach (Image imageName in imageNames)
-		  {
-			 images.Add(GetBitmap(imageName));
-		  }
-	   }
+	   } 
+	   #endregion
     }
 }

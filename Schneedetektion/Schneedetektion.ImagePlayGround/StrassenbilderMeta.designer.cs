@@ -33,6 +33,9 @@ namespace Schneedetektion.ImagePlayGround
     partial void InsertImage(Image instance);
     partial void UpdateImage(Image instance);
     partial void DeleteImage(Image instance);
+    partial void InsertCamera(Camera instance);
+    partial void UpdateCamera(Camera instance);
+    partial void DeleteCamera(Camera instance);
     #endregion
 		
 		public StrassenbilderMetaDataContext() : 
@@ -70,6 +73,14 @@ namespace Schneedetektion.ImagePlayGround
 			get
 			{
 				return this.GetTable<Image>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Camera> Cameras
+		{
+			get
+			{
+				return this.GetTable<Camera>();
 			}
 		}
 	}
@@ -183,6 +194,188 @@ namespace Schneedetektion.ImagePlayGround
 					this._DateTime = value;
 					this.SendPropertyChanged("DateTime");
 					this.OnDateTimeChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Cameras")]
+	public partial class Camera : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private string _Name;
+		
+		private string _Site;
+		
+		private string _Description;
+		
+		private string _Comment;
+		
+		private string _Coordinates;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnSiteChanging(string value);
+    partial void OnSiteChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnCommentChanging(string value);
+    partial void OnCommentChanged();
+    partial void OnCoordinatesChanging(string value);
+    partial void OnCoordinatesChanged();
+    #endregion
+		
+		public Camera()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Site", DbType="NVarChar(50)")]
+		public string Site
+		{
+			get
+			{
+				return this._Site;
+			}
+			set
+			{
+				if ((this._Site != value))
+				{
+					this.OnSiteChanging(value);
+					this.SendPropertyChanging();
+					this._Site = value;
+					this.SendPropertyChanged("Site");
+					this.OnSiteChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(50)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Comment", DbType="NVarChar(50)")]
+		public string Comment
+		{
+			get
+			{
+				return this._Comment;
+			}
+			set
+			{
+				if ((this._Comment != value))
+				{
+					this.OnCommentChanging(value);
+					this.SendPropertyChanging();
+					this._Comment = value;
+					this.SendPropertyChanged("Comment");
+					this.OnCommentChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Coordinates", DbType="NVarChar(50)")]
+		public string Coordinates
+		{
+			get
+			{
+				return this._Coordinates;
+			}
+			set
+			{
+				if ((this._Coordinates != value))
+				{
+					this.OnCoordinatesChanging(value);
+					this.SendPropertyChanging();
+					this._Coordinates = value;
+					this.SendPropertyChanged("Coordinates");
+					this.OnCoordinatesChanged();
 				}
 			}
 		}

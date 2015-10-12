@@ -5,18 +5,20 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 
 namespace Schneedetektion.ImagePlayGround
 {
     public partial class MainWindow : Window
     {
 	   private static string folderName = Settings.Default.WorkingFolder;
-	   private static string[] cameraNames = { "all", "mvk021", "mvk101", "mvk105", "mvk107", "mvk110", "mvk120", "mvk122", "mvk131" };
 	   private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
 	   private IEnumerable<Image> imageNames = new List<Image>();
+	   private ObservableCollection<string> cameraNames = new ObservableCollection<string>() { "all" };//, "mvk021", "mvk101", "mvk105", "mvk107", "mvk110", "mvk120", "mvk122", "mvk131" };
 	   private ObservableCollection<BitmapImage> images = new ObservableCollection<BitmapImage>();
-	   private BitmapImage currentTimeLapseImage = new BitmapImage();
+	   private DispatcherTimer timer = new DispatcherTimer();
 
 	   private int year = 2014;
 	   private int month = 12;
@@ -30,9 +32,14 @@ namespace Schneedetektion.ImagePlayGround
 	   public MainWindow()
 	   {
 		  InitializeComponent();
-		  DataContext = this;
-		  imageContainer.ItemsSource = images;
 		  listBox.ItemsSource = cameraNames;
+		  imageContainer.ItemsSource = images;
+
+		  #region Initial Load
+		  foreach (Camera camera in dataContext.Cameras)
+		  {
+			 cameraNames.Add(camera.Name);
+		  }
 
 		  imageNames = dataContext.Images.Where(i => i.Place == cameraNames[1]).Take(265);
 
@@ -42,7 +49,12 @@ namespace Schneedetektion.ImagePlayGround
 		  }
 
 		  timeLapesImage.Source = images.First();
-        }
+		  slider1.Maximum = images.Count - 1;
+		  #endregion
+
+		  timer.Tick += Timer_Tick;
+		  timer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100 Milisekunden => 10fps
+	   }
 
 	   #region Event Handler
 	   private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -87,9 +99,47 @@ namespace Schneedetektion.ImagePlayGround
 
 		  ReloadImages();
 	   }
+
+	   private void slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+	   {
+		  timeLapesImage.Source = images[(int)slider1.Value];
+	   }
+
+	   private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+	   {
+		  if (e.Key == Key.Space)
+		  {
+			 if (timer.IsEnabled)
+			 {
+				timer.Stop();
+			 }
+			 else
+			 {
+				timer.Start();
+			 }
+		  }
+		  else if (e.Key == Key.Left)
+		  {
+			 slider1.Value--;
+		  }
+		  else if (e.Key == Key.Right)
+		  {
+			 slider1.Value++;
+		  }
+	   }
+
+	   private void Timer_Tick(object sender, EventArgs e)
+	   {
+		  slider1.Value++;
+		  if ((slider1.Value+1) >= images.Count)
+		  {
+			 slider1.Value = 0;
+		  }
+		  CommandManager.InvalidateRequerySuggested();
+	   }
 	   #endregion
 
-	   #region Helper Method
+	   #region Helper Methods
 	   private void ReloadImages()
 	   {
 		  imageNames = (from i in dataContext.Images
@@ -106,6 +156,9 @@ namespace Schneedetektion.ImagePlayGround
 		  {
 			 images.Add(GetBitmap(imageName));
 		  }
+
+		  slider1.Maximum = images.Count - 1;
+		  timeLapesImage.Source = images[(int)slider1.Value];
 	   }
 
 	   private BitmapImage GetBitmap(Image image)
@@ -118,7 +171,7 @@ namespace Schneedetektion.ImagePlayGround
 		  {
 			 return new BitmapImage();
 		  }
-	   } 
+	   }
 	   #endregion
     }
 }

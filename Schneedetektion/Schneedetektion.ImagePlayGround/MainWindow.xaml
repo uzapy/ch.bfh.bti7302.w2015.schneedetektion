@@ -25,7 +25,7 @@
         </GroupBox>
         <TabControl Margin="128,10,10.333,9.667">
             <TabItem Header="Gallery">
-                <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="imageContainer_SelectionChanged">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal" />
@@ -44,6 +44,21 @@
                     <Image x:Name="timeLapesImage" DockPanel.Dock="Bottom" HorizontalAlignment="Left" VerticalAlignment="Top" />
                 </DockPanel>
             </TabItem>
+            <TabItem Header="Mask-Tool">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <TextBlock x:Name="selectedCameraName" />
+                        <ComboBox x:Name="selectedArea" SelectionChanged="SelectedArea_SelectionChanged" Width="150" />
+                        <Button x:Name="newPolygon" Content="New" Width="50" Click="newPolygon_Click" />
+                        <Button x:Name="savePolygon" Content="Save" Width="50" Click="savePolygon_Click" />
+                        <Button x:Name="deletePoint" Content="Delete last Point" Width="100" Click="deletePoint_Click" />
+                    </StackPanel>
+                    <Grid DockPanel.Dock="Bottom" >
+				    <Image x:Name="maskToolImage" Grid.Row="0" Source="{Binding ElementName=imageContainer, Path=SelectedItem}" HorizontalAlignment="Left" />
+                        <Canvas x:Name="polygonCanvas" Grid.Row="0" MouseLeftButtonDown="polygonCanvas_MouseLeftButtonDown" Background="Transparent" />
+				</Grid>
+			 </DockPanel>
+		  </TabItem>
         </TabControl>
     </Grid>
 </Window>

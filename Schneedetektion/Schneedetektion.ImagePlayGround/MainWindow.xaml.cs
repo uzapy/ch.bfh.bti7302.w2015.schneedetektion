@@ -15,10 +15,16 @@ namespace Schneedetektion.ImagePlayGround
     {
 	   private static string folderName = Settings.Default.WorkingFolder;
 	   private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
+
+	   private ObservableCollection<string> cameraNames = new ObservableCollection<string>() { "all" };
+	   private List<string> selectedCameras = new List<string>() { "all" };
 	   private IEnumerable<Image> imageNames = new List<Image>();
-	   private ObservableCollection<string> cameraNames = new ObservableCollection<string>() { "all" };//, "mvk021", "mvk101", "mvk105", "mvk107", "mvk110", "mvk120", "mvk122", "mvk131" };
 	   private ObservableCollection<BitmapImage> images = new ObservableCollection<BitmapImage>();
+	   private Image selectedImage;
+
 	   private DispatcherTimer timer = new DispatcherTimer();
+
+	   private PolygonHandler polygonHandler;
 
 	   private int year = 2014;
 	   private int month = 12;
@@ -27,7 +33,6 @@ namespace Schneedetektion.ImagePlayGround
 	   private int hour = 0;
 	   private int minute = 0;
 	   private bool hasTime = false;
-	   private List<string> selectedCameras = new List<string>() { "all" };
 
 	   public MainWindow()
 	   {
@@ -54,6 +59,10 @@ namespace Schneedetektion.ImagePlayGround
 
 		  timer.Tick += Timer_Tick;
 		  timer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100 Milisekunden => 10fps
+
+		  polygonHandler = new PolygonHandler(dataContext, polygonCanvas);
+		  selectedArea.ItemsSource = polygonHandler.ImageAreas;
+		  selectedArea.SelectedItem = selectedArea.Items[0];
 	   }
 
 	   #region Event Handler
@@ -136,6 +145,41 @@ namespace Schneedetektion.ImagePlayGround
 			 slider1.Value = 0;
 		  }
 		  CommandManager.InvalidateRequerySuggested();
+	   }
+
+	   private void imageContainer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+	   {
+		  if (imageContainer.SelectedIndex >= 0)
+		  {
+			 selectedImage = imageNames.ElementAt(imageContainer.SelectedIndex);
+                polygonHandler.newPolygon(selectedImage, selectedArea.SelectedIndex, maskToolImage.Width, maskToolImage.Height);
+			 selectedCameraName.Text = "Camera: " + selectedImage.Place;
+		  }
+	   }
+
+	   private void SelectedArea_SelectionChanged(object sender, SelectionChangedEventArgs e)
+	   {
+		  polygonHandler.setSelectedArea(selectedArea.SelectedIndex);
+	   }
+
+	   private void newPolygon_Click(object sender, RoutedEventArgs e)
+	   {
+		  polygonHandler.newPolygon(selectedImage, selectedArea.SelectedIndex, maskToolImage.Width, maskToolImage.Height);
+        }
+
+	   private void savePolygon_Click(object sender, RoutedEventArgs e)
+	   {
+		  polygonHandler.savePolygon();
+	   }
+
+	   private void deletePoint_Click(object sender, RoutedEventArgs e)
+	   {
+		  polygonHandler.deleteLastPoint();
+	   }
+
+	   private void polygonCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+	   {
+		  polygonHandler.setPoint(e.GetPosition(polygonCanvas));
 	   }
 	   #endregion
 

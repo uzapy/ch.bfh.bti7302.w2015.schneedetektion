@@ -18,4 +18,14 @@
       <Column Name="Coordinates" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
     </Type>
   </Table>
+  <Table Name="dbo.Polygons" Member="Polygons">
+    <Type Name="Polygon">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="CameraName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="ImageArea" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ImageWidth" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="ImageHeight" Type="System.Double" DbType="Float" CanBeNull="true" />
+      <Column Name="PolygonPointCollection" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+    </Type>
+  </Table>
 </Database>

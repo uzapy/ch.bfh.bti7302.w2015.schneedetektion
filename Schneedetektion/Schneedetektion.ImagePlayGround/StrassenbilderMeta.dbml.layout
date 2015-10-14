@@ -14,5 +14,11 @@
         <elementListCompartment Id="6cec5ace-1708-4b9b-b43f-d56afe544d60" absoluteBounds="3.1400000000000006, 1.335, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="eabd48ee-255e-4275-802a-4085b6b3e5a3" absoluteBounds="5.5, 0.875, 2, 1.9631982421875">
+      <DataClassMoniker Name="/StrassenbilderMetaDataContext/Polygon" />
+      <nestedChildShapes>
+        <elementListCompartment Id="cad69a6c-eba1-4bc5-b994-b6030a992d08" absoluteBounds="5.515, 1.335, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

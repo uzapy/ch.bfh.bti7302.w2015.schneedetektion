@@ -1,23 +1,27 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
+using Shapes = System.Windows.Shapes;
 
 namespace Schneedetektion.ImagePlayGround
 {
     internal class PolygonHandler
     {
 	   private StrassenbilderMetaDataContext dataContext;
-	   private Polygon polygon;
+	   private JsonSerializer jsonSerialiser = new JsonSerializer();
+	   private List<Shapes.Polygon> savedPolygons = new List<Shapes.Polygon>();
+	   private Shapes.Polygon polygon;
 	   private Canvas polygonCanvas;
 	   private string selectedCamera = string.Empty;
-	   private double imageWidth = 0;
-	   private double imageHeight = 0;
+	   private int selectedAreaIndex = 0;
 
 	   private string[] imageAreas = new string[] { "Lane", "Emergency Lane", "Median", "Marking", "Grass", "Tree", "Background", "Sky" };
-	   private Brush[] fillBrushes = { Brushes.Blue , Brushes.Red, Brushes.Yellow, Brushes.Brown, Brushes.Violet, Brushes.Orange, Brushes.Magenta, Brushes.Gold };
-	   private Brush[] strokeBrushes = { Brushes.LightBlue , Brushes.OrangeRed, Brushes.Khaki, Brushes.Sienna, Brushes.Pink, Brushes.SandyBrown, Brushes.Orchid, Brushes.Wheat };
+	   private Brush[] fillBrushes = { Brushes.Blue, Brushes.Red, Brushes.Yellow, Brushes.Brown, Brushes.Violet, Brushes.Orange, Brushes.Magenta, Brushes.Gold };
+	   private Brush[] strokeBrushes = { Brushes.LightBlue, Brushes.OrangeRed, Brushes.Khaki, Brushes.Sienna, Brushes.Pink, Brushes.SandyBrown, Brushes.Orchid, Brushes.Wheat };
 
 	   public PolygonHandler(StrassenbilderMetaDataContext dataContext, Canvas polygonCanvas)
 	   {
@@ -26,48 +30,77 @@ namespace Schneedetektion.ImagePlayGround
 	   }
 
 	   public string[] ImageAreas { get { return imageAreas; } }
-	   public Brush[] ImageAreaBrushes { get { return fillBrushes; } }
 
-	   internal void newPolygon(Image selectedImage, int selectedAreaIndex, double width, double height)
+	   internal void newPolygon(Image selectedImage, int areaIndex)
 	   {
-		  polygonCanvas.Children.Clear();
-
+		  polygonCanvas.Children.Remove(polygon);
 		  selectedCamera = selectedImage.Place;
-		  imageWidth = width;
-		  imageHeight = height;
+		  selectedAreaIndex = areaIndex;
 
-		  polygon = new Polygon();
+		  polygon = new Shapes.Polygon();
 		  polygon.Stroke = fillBrushes[selectedAreaIndex];
 		  polygon.Fill = strokeBrushes[selectedAreaIndex];
 		  polygon.Opacity = 0.33d;
 		  polygonCanvas.Children.Add(polygon);
 	   }
 
-	   internal void setSelectedArea(int selectedAreaIndex)
+	   internal void LoadSavedPolygons(Image selectedImage)
+	   {
+		  selectedCamera = selectedImage.Place;
+
+		  polygonCanvas.Children.Clear();
+		  var dbPolygons = dataContext.Polygons.Where(p => p.CameraName == selectedCamera);
+		  foreach (Polygon dbPolygon in dbPolygons)
+		  {
+			 Shapes.Polygon polygon = new Shapes.Polygon();
+			 polygon.Stroke = fillBrushes[Array.IndexOf(imageAreas, dbPolygon.ImageArea)];
+			 polygon.Fill = strokeBrushes[Array.IndexOf(imageAreas, dbPolygon.ImageArea)];
+			 polygon.Opacity = 0.33d;
+			 polygonCanvas.Children.Add(polygon);
+			 foreach (Point point in JsonConvert.DeserializeObject<PointCollection>(dbPolygon.PolygonPointCollection))
+			 {
+				polygon.Points.Add(point);
+			 }
+		  }
+	   }
+
+	   internal void setSelectedArea(int areaIndex)
 	   {
 		  if (polygon != null)
 		  {
+			 selectedAreaIndex = areaIndex;
 			 polygon.Stroke = fillBrushes[selectedAreaIndex];
-			 polygon.Fill = strokeBrushes[selectedAreaIndex]; 
+			 polygon.Fill = strokeBrushes[selectedAreaIndex];
 		  }
 	   }
 
 	   internal void setPoint(Point point)
 	   {
-		  polygon.Points.Add(point);
-        }
+		  if (polygon != null)
+		  {
+			 polygon.Points.Add(point);
+		  }
+	   }
 
 	   internal void deleteLastPoint()
 	   {
 		  if (polygon.Points.Count > 0)
 		  {
-			 polygon.Points.RemoveAt(polygon.Points.Count - 1); 
+			 polygon.Points.RemoveAt(polygon.Points.Count - 1);
 		  }
 	   }
 
-	   internal void savePolygon()
+	   internal void savePolygon(double imageWidth, double imageHeight)
 	   {
-		  throw new NotImplementedException();
+		  Polygon p = new Polygon();
+		  p.CameraName = selectedCamera;
+		  p.ImageArea = imageAreas[selectedAreaIndex];
+		  p.ImageWidth = imageWidth;
+		  p.ImageHeight = imageHeight;
+		  p.PolygonPointCollection = JsonConvert.SerializeObject(polygon.Points);
+
+		  dataContext.Polygons.InsertOnSubmit(p);
+		  dataContext.SubmitChanges();
 	   }
     }
 }

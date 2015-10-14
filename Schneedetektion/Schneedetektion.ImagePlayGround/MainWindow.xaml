@@ -54,7 +54,7 @@
                         <Button x:Name="deletePoint" Content="Delete last Point" Width="100" Click="deletePoint_Click" />
                     </StackPanel>
                     <Grid DockPanel.Dock="Bottom" >
-				    <Image x:Name="maskToolImage" Grid.Row="0" Source="{Binding ElementName=imageContainer, Path=SelectedItem}" HorizontalAlignment="Left" />
+                        <Image x:Name="maskToolImage" Grid.Row="0" Source="{Binding ElementName=imageContainer, Path=SelectedItem}" HorizontalAlignment="Left" />
                         <Canvas x:Name="polygonCanvas" Grid.Row="0" MouseLeftButtonDown="polygonCanvas_MouseLeftButtonDown" Background="Transparent" />
 				</Grid>
 			 </DockPanel>

@@ -151,9 +151,12 @@ namespace Schneedetektion.ImagePlayGround
 	   {
 		  if (imageContainer.SelectedIndex >= 0)
 		  {
-			 selectedImage = imageNames.ElementAt(imageContainer.SelectedIndex);
-                polygonHandler.newPolygon(selectedImage, selectedArea.SelectedIndex, maskToolImage.Width, maskToolImage.Height);
-			 selectedCameraName.Text = "Camera: " + selectedImage.Place;
+			 if (selectedImage?.Place != imageNames.ElementAt(imageContainer.SelectedIndex).Place)
+			 {
+				selectedImage = imageNames.ElementAt(imageContainer.SelectedIndex);
+				polygonHandler.LoadSavedPolygons(selectedImage);
+				selectedCameraName.Text = "Camera: " + selectedImage.Place;
+			 }
 		  }
 	   }
 
@@ -164,12 +167,12 @@ namespace Schneedetektion.ImagePlayGround
 
 	   private void newPolygon_Click(object sender, RoutedEventArgs e)
 	   {
-		  polygonHandler.newPolygon(selectedImage, selectedArea.SelectedIndex, maskToolImage.Width, maskToolImage.Height);
+		  polygonHandler.newPolygon(selectedImage, selectedArea.SelectedIndex);
         }
 
 	   private void savePolygon_Click(object sender, RoutedEventArgs e)
 	   {
-		  polygonHandler.savePolygon();
+		  polygonHandler.savePolygon(maskToolImage.ActualWidth, maskToolImage.ActualHeight);
 	   }
 
 	   private void deletePoint_Click(object sender, RoutedEventArgs e)

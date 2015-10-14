@@ -36,6 +36,9 @@ namespace Schneedetektion.ImagePlayGround
     partial void InsertCamera(Camera instance);
     partial void UpdateCamera(Camera instance);
     partial void DeleteCamera(Camera instance);
+    partial void InsertPolygon(Polygon instance);
+    partial void UpdatePolygon(Polygon instance);
+    partial void DeletePolygon(Polygon instance);
     #endregion
 		
 		public StrassenbilderMetaDataContext() : 
@@ -81,6 +84,14 @@ namespace Schneedetektion.ImagePlayGround
 			get
 			{
 				return this.GetTable<Camera>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Polygon> Polygons
+		{
+			get
+			{
+				return this.GetTable<Polygon>();
 			}
 		}
 	}
@@ -376,6 +387,188 @@ namespace Schneedetektion.ImagePlayGround
 					this._Coordinates = value;
 					this.SendPropertyChanged("Coordinates");
 					this.OnCoordinatesChanged();
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.Polygons")]
+	public partial class Polygon : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ID;
+		
+		private string _CameraName;
+		
+		private string _ImageArea;
+		
+		private System.Nullable<double> _ImageWidth;
+		
+		private System.Nullable<double> _ImageHeight;
+		
+		private string _PolygonPointCollection;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIDChanging(int value);
+    partial void OnIDChanged();
+    partial void OnCameraNameChanging(string value);
+    partial void OnCameraNameChanged();
+    partial void OnImageAreaChanging(string value);
+    partial void OnImageAreaChanged();
+    partial void OnImageWidthChanging(System.Nullable<double> value);
+    partial void OnImageWidthChanged();
+    partial void OnImageHeightChanging(System.Nullable<double> value);
+    partial void OnImageHeightChanged();
+    partial void OnPolygonPointCollectionChanging(string value);
+    partial void OnPolygonPointCollectionChanged();
+    #endregion
+		
+		public Polygon()
+		{
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ID
+		{
+			get
+			{
+				return this._ID;
+			}
+			set
+			{
+				if ((this._ID != value))
+				{
+					this.OnIDChanging(value);
+					this.SendPropertyChanging();
+					this._ID = value;
+					this.SendPropertyChanged("ID");
+					this.OnIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CameraName", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string CameraName
+		{
+			get
+			{
+				return this._CameraName;
+			}
+			set
+			{
+				if ((this._CameraName != value))
+				{
+					this.OnCameraNameChanging(value);
+					this.SendPropertyChanging();
+					this._CameraName = value;
+					this.SendPropertyChanged("CameraName");
+					this.OnCameraNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageArea", DbType="NVarChar(50)")]
+		public string ImageArea
+		{
+			get
+			{
+				return this._ImageArea;
+			}
+			set
+			{
+				if ((this._ImageArea != value))
+				{
+					this.OnImageAreaChanging(value);
+					this.SendPropertyChanging();
+					this._ImageArea = value;
+					this.SendPropertyChanged("ImageArea");
+					this.OnImageAreaChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageWidth", DbType="Float")]
+		public System.Nullable<double> ImageWidth
+		{
+			get
+			{
+				return this._ImageWidth;
+			}
+			set
+			{
+				if ((this._ImageWidth != value))
+				{
+					this.OnImageWidthChanging(value);
+					this.SendPropertyChanging();
+					this._ImageWidth = value;
+					this.SendPropertyChanged("ImageWidth");
+					this.OnImageWidthChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ImageHeight", DbType="Float")]
+		public System.Nullable<double> ImageHeight
+		{
+			get
+			{
+				return this._ImageHeight;
+			}
+			set
+			{
+				if ((this._ImageHeight != value))
+				{
+					this.OnImageHeightChanging(value);
+					this.SendPropertyChanging();
+					this._ImageHeight = value;
+					this.SendPropertyChanged("ImageHeight");
+					this.OnImageHeightChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PolygonPointCollection", DbType="NVarChar(MAX)")]
+		public string PolygonPointCollection
+		{
+			get
+			{
+				return this._PolygonPointCollection;
+			}
+			set
+			{
+				if ((this._PolygonPointCollection != value))
+				{
+					this.OnPolygonPointCollectionChanging(value);
+					this.SendPropertyChanging();
+					this._PolygonPointCollection = value;
+					this.SendPropertyChanged("PolygonPointCollection");
+					this.OnPolygonPointCollectionChanged();
 				}
 			}
 		}

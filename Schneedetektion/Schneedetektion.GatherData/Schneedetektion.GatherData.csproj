@@ -66,28 +66,24 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="StrassenbilderMetaDataSet.Designer.cs">
+    <Compile Include="StrassenbilderMeta.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>StrassenbilderMetaDataSet.xsd</DependentUpon>
+      <DependentUpon>StrassenbilderMeta.dbml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="StrassenbilderMetaDataSet.xsc">
-      <DependentUpon>StrassenbilderMetaDataSet.xsd</DependentUpon>
-    </None>
-    <None Include="StrassenbilderMetaDataSet.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>StrassenbilderMetaDataSet.Designer.cs</LastGenOutput>
+    <None Include="StrassenbilderMeta.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>StrassenbilderMeta.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </None>
-    <None Include="StrassenbilderMetaDataSet.xss">
-      <DependentUpon>StrassenbilderMetaDataSet.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +109,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="StrassenbilderMeta.dbml.layout">
+      <DependentUpon>StrassenbilderMeta.dbml</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

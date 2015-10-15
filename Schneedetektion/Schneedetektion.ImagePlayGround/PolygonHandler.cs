@@ -13,7 +13,6 @@ namespace Schneedetektion.ImagePlayGround
     {
 	   private StrassenbilderMetaDataContext dataContext;
 	   private JsonSerializer jsonSerialiser = new JsonSerializer();
-	   private List<Shapes.Polygon> savedPolygons = new List<Shapes.Polygon>();
 	   private Shapes.Polygon polygon;
 	   private Canvas polygonCanvas;
 	   private string selectedCamera = string.Empty;
@@ -44,7 +43,7 @@ namespace Schneedetektion.ImagePlayGround
 		  polygonCanvas.Children.Add(polygon);
 	   }
 
-	   internal void LoadSavedPolygons(Image selectedImage)
+	   internal void loadSavedPolygons(Image selectedImage)
 	   {
 		  selectedCamera = selectedImage.Place;
 

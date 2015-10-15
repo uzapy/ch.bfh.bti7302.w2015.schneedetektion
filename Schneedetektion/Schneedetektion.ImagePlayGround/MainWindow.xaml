@@ -9,21 +9,24 @@
 	   PreviewKeyDown="Window_PreviewKeyDown" >
     <Grid>
         <GroupBox x:Name="groupBox0" Header="By date" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" >
-            <DatePicker x:Name="datePicker" DisplayDateEnd="2015-06-10" DisplayDateStart="2014-12-02" FirstDayOfWeek="Monday" DisplayDate="2014-12-02" TabIndex="1" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
+            <DatePicker x:Name="datePicker" Width="110" DisplayDateEnd="2015-06-10" DisplayDateStart="2014-12-02" FirstDayOfWeek="Monday" DisplayDate="2014-12-02" TabIndex="1" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
         </GroupBox>
 
         <GroupBox x:Name="groupBox1" Header="By time" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top">
             <StackPanel>
-                <xceed:TimePicker x:Name="timePicker" Width="100" TabIndex="2" LostFocus="timePicker_LostFocus" />
+                <xceed:TimePicker x:Name="timePicker" Width="110" TabIndex="2" LostFocus="timePicker_LostFocus" />
             </StackPanel>
         </GroupBox>
         <GroupBox x:Name="groupBox2" Header="By camera" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top">
-            <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="224" Margin="0,0,0,0" Width="100" TabIndex="4" SelectionMode="Multiple" SelectionChanged="listBox_SelectionChanged" />
+            <ListBox x:Name="listBox1" HorizontalAlignment="Left" Height="224" Width="110" TabIndex="4" SelectionMode="Multiple" SelectionChanged="listBox1_SelectionChanged" />
         </GroupBox>
         <GroupBox x:Name="groupBox3" Header="Size" HorizontalAlignment="Left" Margin="10,362,0,0" VerticalAlignment="Top">
-            <Slider x:Name="slider0" HorizontalAlignment="Left" Width="100" VerticalAlignment="Top" TabIndex="5" Maximum="400" Minimum="50" LargeChange="1" Value="50"/>
+            <Slider x:Name="slider0" HorizontalAlignment="Left" Width="110" VerticalAlignment="Top" TabIndex="5" Maximum="400" Minimum="50" LargeChange="1" Value="50"/>
         </GroupBox>
-        <TabControl Margin="128,10,10.333,9.667">
+        <GroupBox x:Name="groupBox4" Header="Apply Masks" HorizontalAlignment="Left" Margin="10,408,0,0" VerticalAlignment="Top">
+            <ListBox x:Name="listBox2" HorizontalAlignment="Left" Height="224" Width="110" TabIndex="6" SelectionMode="Multiple" SelectionChanged="listBox2_SelectionChanged" />
+        </GroupBox>
+        <TabControl Margin="138,10,0.333,9.667">
             <TabItem Header="Gallery">
                 <ListView x:Name="imageContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="imageContainer_SelectionChanged">
                     <ListView.ItemsPanel>
@@ -54,11 +57,11 @@
                         <Button x:Name="deletePoint" Content="Delete last Point" Width="100" Click="deletePoint_Click" />
                     </StackPanel>
                     <Grid DockPanel.Dock="Bottom" >
-                        <Image x:Name="maskToolImage" Grid.Row="0" Source="{Binding ElementName=imageContainer, Path=SelectedItem}" HorizontalAlignment="Left" />
+                        <Image x:Name="maskToolImage" Grid.Row="0" Source="{Binding ElementName=imageContainer, Path=SelectedItem}" HorizontalAlignment="Left" Width="1300" Height="1000" />
                         <Canvas x:Name="polygonCanvas" Grid.Row="0" MouseLeftButtonDown="polygonCanvas_MouseLeftButtonDown" Background="Transparent" />
-				</Grid>
-			 </DockPanel>
-		  </TabItem>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

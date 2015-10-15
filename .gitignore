@@ -12,4 +12,8 @@
 hs_err_pid*
 /Schneedetektion/Schneedetektion.ImageMove/bin/Debug
 /Schneedetektion/Schneedetektion.ImageMove/obj/Debug
+/Schneedetektion/Schneedetektion.GatherData/bin/Debug
+/Schneedetektion/Schneedetektion.GatherData/obj/Debug
+/Schneedetektion/Schneedetektion.ImagePlayGround/bin/Debug
+/Schneedetektion/Schneedetektion.ImagePlayGround/obj/Debug
 *.suo

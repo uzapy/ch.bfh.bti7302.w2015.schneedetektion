@@ -11,7 +11,7 @@ namespace Schneedetektion.ImagePlayGround
 {
     internal class PolygonHandler
     {
-	   private StrassenbilderMetaDataContext dataContext;
+	   private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
 	   private JsonSerializer jsonSerialiser = new JsonSerializer();
 	   private Shapes.Polygon polygon;
 	   private Canvas polygonCanvas;
@@ -22,9 +22,8 @@ namespace Schneedetektion.ImagePlayGround
 	   private Brush[] fillBrushes = { Brushes.Blue, Brushes.Red, Brushes.Yellow, Brushes.Brown, Brushes.Violet, Brushes.Orange, Brushes.Magenta, Brushes.Gold };
 	   private Brush[] strokeBrushes = { Brushes.LightBlue, Brushes.OrangeRed, Brushes.Khaki, Brushes.Sienna, Brushes.Pink, Brushes.SandyBrown, Brushes.Orchid, Brushes.Wheat };
 
-	   public PolygonHandler(StrassenbilderMetaDataContext dataContext, Canvas polygonCanvas)
+	   public PolygonHandler(Canvas polygonCanvas)
 	   {
-		  this.dataContext = dataContext;
 		  this.polygonCanvas = polygonCanvas;
 	   }
 

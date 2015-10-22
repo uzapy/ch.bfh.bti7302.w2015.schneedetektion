@@ -62,7 +62,7 @@ namespace Schneedetektion.ImagePlayGround
 		  timer.Tick += Timer_Tick;
 		  timer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100 Milisekunden => 10fps
 
-		  polygonHandler = new PolygonHandler(dataContext, polygonCanvas);
+		  polygonHandler = new PolygonHandler(polygonCanvas);
 		  selectedArea.ItemsSource = polygonHandler.ImageAreas;
 		  selectedArea.SelectedItem = selectedArea.Items[0];
 

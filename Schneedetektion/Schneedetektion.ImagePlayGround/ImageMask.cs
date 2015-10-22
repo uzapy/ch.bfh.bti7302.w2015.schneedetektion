@@ -27,7 +27,7 @@ namespace Schneedetektion.ImagePlayGround
         internal BitmapImage ApplyMasks(Image imageName)
         {
             Drawing.Image image = Drawing.Image.FromFile(folderName + "\\" + imageName.Place + "\\" + imageName.Name.Substring(7, 8) + "\\" + imageName.Name + ".jpg");
-            byte[] pixels;
+            //byte[] pixels;
             BitmapImage bitmap = new BitmapImage();
 
             //using (MemoryStream stream = new MemoryStream())

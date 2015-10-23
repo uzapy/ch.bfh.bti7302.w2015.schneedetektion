@@ -154,6 +154,12 @@
   <ItemGroup>
     <Resource Include="warning.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Schneedetektion.OpenCV\Schneedetektion.OpenCV.csproj">
+      <Project>{698ff3d6-6293-4bb0-9ff6-f87669dd6b2e}</Project>
+      <Name>Schneedetektion.OpenCV</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

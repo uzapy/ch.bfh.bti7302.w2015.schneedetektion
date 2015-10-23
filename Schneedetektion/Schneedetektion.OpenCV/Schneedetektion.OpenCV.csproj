@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="OpenCVHelper.cs" />
     <Compile Include="StrassenbilderMeta.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Globalization;
+using System.Data.Linq;
 
 namespace Schneedetektion.GatherData
 {
@@ -92,9 +93,9 @@ namespace Schneedetektion.GatherData
                                 image.TimeZone = tzn;
                                 image.UnixTime = double.Parse(tit, CultureInfo.InvariantCulture);
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
-                                Console.WriteLine(dat + " " + tim + " " + tzn + " " + tit);
+                                Console.WriteLine(e.Message);
                             }
                         }
                         else
@@ -109,7 +110,6 @@ namespace Schneedetektion.GatherData
                 }
 
                 dataContext.SubmitChanges();
-
                 Console.WriteLine("Finished!");
             }
         }

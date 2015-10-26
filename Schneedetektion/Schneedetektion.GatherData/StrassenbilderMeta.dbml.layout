@@ -14,10 +14,10 @@
         <elementListCompartment Id="698baa13-0b2a-499c-b0ed-17a4fb9862da" absoluteBounds="3.765, 1.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
-    <classShape Id="72836883-b2b0-4685-99a3-c52cf9c946be" absoluteBounds="0.75, 3.75, 2, 1.5785953776041666">
+    <classShape Id="2ec69902-1483-41eb-8506-264ed0c42a25" absoluteBounds="0.75, 3.25, 2, 1.9631982421875">
       <DataClassMoniker Name="/StrassenbilderMetaDataContext/Image" />
       <nestedChildShapes>
-        <elementListCompartment Id="af0e9832-4e02-42be-bcbf-9ed2a5f52a2b" absoluteBounds="0.765, 4.21, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+        <elementListCompartment Id="9e198f22-fc5e-434f-910f-318da278d8b3" absoluteBounds="0.76500000000000012, 3.71, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

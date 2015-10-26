@@ -474,6 +474,10 @@ namespace Schneedetektion.GatherData
 		
 		private System.DateTime _DateTime;
 		
+		private string _TimeZone;
+		
+		private System.Nullable<double> _UnixTime;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -486,6 +490,10 @@ namespace Schneedetektion.GatherData
     partial void OnPlaceChanged();
     partial void OnDateTimeChanging(System.DateTime value);
     partial void OnDateTimeChanged();
+    partial void OnTimeZoneChanging(string value);
+    partial void OnTimeZoneChanged();
+    partial void OnUnixTimeChanging(System.Nullable<double> value);
+    partial void OnUnixTimeChanged();
     #endregion
 		
 		public Image()
@@ -569,6 +577,46 @@ namespace Schneedetektion.GatherData
 					this._DateTime = value;
 					this.SendPropertyChanged("DateTime");
 					this.OnDateTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TimeZone", DbType="NVarChar(5)")]
+		public string TimeZone
+		{
+			get
+			{
+				return this._TimeZone;
+			}
+			set
+			{
+				if ((this._TimeZone != value))
+				{
+					this.OnTimeZoneChanging(value);
+					this.SendPropertyChanging();
+					this._TimeZone = value;
+					this.SendPropertyChanged("TimeZone");
+					this.OnTimeZoneChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UnixTime", DbType="Float")]
+		public System.Nullable<double> UnixTime
+		{
+			get
+			{
+				return this._UnixTime;
+			}
+			set
+			{
+				if ((this._UnixTime != value))
+				{
+					this.OnUnixTimeChanging(value);
+					this.SendPropertyChanging();
+					this._UnixTime = value;
+					this.SendPropertyChanged("UnixTime");
+					this.OnUnixTimeChanged();
 				}
 			}
 		}

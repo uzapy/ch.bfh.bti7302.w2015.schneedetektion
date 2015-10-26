@@ -41,22 +41,24 @@ namespace Schneedetektion.OpenCV
             using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints))
             using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
             {
-                CvInvoke.FillPoly(uMatrix, vvPoint, new Bgr(128, 0, 0).MCvScalar);
+                CvInvoke.FillPoly(uMatrix, vvPoint, new Bgr(0, 0, 0).MCvScalar);
             }
 
             //return Imaging.CreateBitmapSourceFromHBitmap(uMatrix.Bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+
+            BitmapImage resultImage;
 
             using (MemoryStream stream = new MemoryStream())
             {
                 uMatrix.Bitmap.Save(stream, ImageFormat.Jpeg);
                 stream.Position = 0;
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = stream;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                return bitmapImage;
+                resultImage = new BitmapImage();
+                resultImage.BeginInit();
+                resultImage.StreamSource = stream;
+                resultImage.CacheOption = BitmapCacheOption.OnLoad;
+                resultImage.EndInit();
             }
+            return resultImage;
         }
     }
 }

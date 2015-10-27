@@ -14,7 +14,7 @@
 
         <GroupBox x:Name="groupBox1" Header="By time" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top">
             <StackPanel>
-                <xceed:TimePicker x:Name="timePicker" Width="110" TabIndex="2" LostFocus="timePicker_LostFocus" />
+                <xceed:TimePicker x:Name="timePicker" Width="110" TabIndex="2" ValueChanged="timePicker_ValueChanged" />
             </StackPanel>
         </GroupBox>
         <GroupBox x:Name="groupBox2" Header="By camera" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top">
@@ -63,5 +63,6 @@
                 </DockPanel>
             </TabItem>
         </TabControl>
+        <Button x:Name="button" Content="Apply Filter" HorizontalAlignment="Left" Margin="10,660,0,0" VerticalAlignment="Top" Width="122" Height="25" Click="button_Click" />
     </Grid>
 </Window>

@@ -190,9 +190,21 @@ namespace Schneedetektion.ImagePlayGround
             polygonHandler.deleteLastPoint();
         }
 
+        private void maskToolImage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            imageWidth.Text = "W: " + maskToolImage.ActualWidth.ToString("0:00");
+            imageHeight.Text = "H: " + maskToolImage.ActualHeight.ToString("0:00");
+        }
+
+        private void polygonCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            pointerXPosition.Text = "X: " + e.GetPosition(maskToolImage).X.ToString("0:00");
+            pointerYPosition.Text = "Y: " + e.GetPosition(maskToolImage).Y.ToString("0:00");
+        }
+
         private void polygonCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            polygonHandler.setPoint(e.GetPosition(polygonCanvas));
+            polygonHandler.setPoint(e.GetPosition(maskToolImage));
         }
         #endregion
 

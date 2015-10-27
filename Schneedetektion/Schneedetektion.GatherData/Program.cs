@@ -1,11 +1,10 @@
 ﻿using Schneedetektion.GatherData.Properties;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Globalization;
-using System.Data.Linq;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Schneedetektion.GatherData
 {
@@ -20,7 +19,8 @@ namespace Schneedetektion.GatherData
             cameraNames = dataContext.Cameras.Select(c => c.Name).ToList();
 
             // RegisterImagesInDB();
-            UpdateDateTime();
+            // UpdateDateTime();
+            // RemoveDataWithoutFile();
         }
 
         private static void RegisterImagesInDB()
@@ -76,7 +76,6 @@ namespace Schneedetektion.GatherData
 
                         string fileContent = Encoding.ASCII.GetString(File.ReadAllBytes(imageName));
 
-
                         if (!string.IsNullOrEmpty(fileContent))
                         {
                             string[] splitFileContent = fileContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
@@ -105,13 +104,28 @@ namespace Schneedetektion.GatherData
                             File.Move(imageName, @"C:\Users\uzapy\Desktop\astra\meta\delete candidates\" + Path.GetFileName(imageName));
                             dataContext.Images.DeleteOnSubmit(image);
                         }
-
                     }
                 }
 
                 dataContext.SubmitChanges();
                 Console.WriteLine("Finished!");
             }
+        }
+        
+        private static void RemoveDataWithoutFile()
+        {
+            foreach (Image image in dataContext.Images.Where(i => i.UnixTime == null))
+            {
+                string imagePath = folderName + "\\" + image.Place + "\\" + image.Name.Split('_')[1] + "\\" + image.Name + ".jpg";
+                if (!File.Exists(imagePath))
+                {
+                    Console.WriteLine("Image deleted: " + image.Name);
+                    dataContext.Images.DeleteOnSubmit(image);
+                }
+            }
+
+            dataContext.SubmitChanges();
+            Console.WriteLine("Finished!");
         }
     }
 }

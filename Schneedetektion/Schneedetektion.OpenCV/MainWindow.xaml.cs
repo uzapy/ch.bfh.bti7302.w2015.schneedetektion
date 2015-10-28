@@ -9,7 +9,7 @@ namespace Schneedetektion.OpenCV
     {
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         OpenCVHelper openCVHelper = new OpenCVHelper();
-        string imagePath = @"C:\Users\uzapy\Desktop\astra\mvk120\20150307\mvk120_20150307_104002.jpg";
+        string imagePath = @"C:\Users\uzapy\Desktop\astra\mvk120\20141204\mvk120_20141204_084001.jpg";
 
         public MainWindow()
         {

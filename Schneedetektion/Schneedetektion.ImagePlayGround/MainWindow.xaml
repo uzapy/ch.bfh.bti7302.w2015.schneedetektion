@@ -36,7 +36,7 @@
                     </ListView.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding UriSource}" Width="{Binding ElementName=slider0, Path=Value}" />
+                            <Image Source="{Binding}" Width="{Binding ElementName=slider0, Path=Value}" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

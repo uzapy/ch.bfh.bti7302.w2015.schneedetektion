@@ -3,42 +3,68 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Drawing = System.Drawing;
-using Media = System.Windows.Media;
 
 namespace Schneedetektion.OpenCV
 {
     public class OpenCVHelper
     {
-        private Drawing.Point[] polygonPoints;
+        private List<Drawing.Point> polygonPoints;
 
-        public BitmapImage GetMaskedImage(string imagePath, Media.PointCollection pointCollection)
+        public BitmapImage GetMaskedImage(string imagePath, IList<Point> pointCollection)
         {
             Mat matrix = new Mat(imagePath, LoadImageType.AnyColor);
             UMat uMatrix = matrix.ToUMat(AccessType.ReadWrite);
 
-            polygonPoints = new Drawing.Point[pointCollection.Count + 4];
+            polygonPoints = new List<Drawing.Point>();
 
-            // Punkte laden und herunterskalieren
-            for (int i = 0; i < pointCollection.Count; i++)
+            polygonPoints.Add(new Drawing.Point(0, 0));
+            polygonPoints.Add(new Drawing.Point(0, uMatrix.Rows));
+            polygonPoints.Add(new Drawing.Point(uMatrix.Cols, uMatrix.Rows));
+            polygonPoints.Add(new Drawing.Point(uMatrix.Cols, 0));
+            polygonPoints.Add(new Drawing.Point(0, 0));
+
+
+            // Element finden, das am nächsten zum Nullpunkt ist
+            Point p0 = pointCollection.OrderBy(p => Math.Sqrt(Math.Pow(p.X, 2) + Math.Pow(p.Y, 2))).First();
+
+            // Punkte in der richtigen Reihenfolge laden und herunterskalieren
+            int element = pointCollection.IndexOf(p0);
+            int i = element;
+            while (i < pointCollection.Count)
             {
-                double x = pointCollection[i].X / 1200 * uMatrix.Rows;
-                double y = pointCollection[i].Y / 1000 * uMatrix.Cols;
-
-                polygonPoints[i] = new Drawing.Point((int)x, (int)y);
+                polygonPoints.Add(
+                    new Drawing.Point(
+                        (int)(pointCollection[i].X * uMatrix.Rows * 1.21),
+                        (int)(pointCollection[i].Y * uMatrix.Cols * 0.81)
+                    )
+                );
+                i++;
+            }
+            int j = 0;
+            while (j < element)
+            {
+                polygonPoints.Add(
+                     new Drawing.Point(
+                         (int)(pointCollection[j].X * uMatrix.Rows * 1.21),
+                         (int)(pointCollection[j].Y * uMatrix.Cols * 0.81)
+                     )
+                 );
+                j++;
             }
 
-            polygonPoints[pointCollection.Count + 0] = new Drawing.Point(0, uMatrix.Rows);
-            polygonPoints[pointCollection.Count + 1] = new Drawing.Point(0, 0);
-            polygonPoints[pointCollection.Count + 2] = new Drawing.Point(uMatrix.Cols, 0);
-            polygonPoints[pointCollection.Count + 3] = new Drawing.Point(uMatrix.Cols, uMatrix.Rows);
+            // Noch einmal zu Ursprung zurück
+            polygonPoints.Add(new Drawing.Point((int)(p0.X * uMatrix.Rows * 1.21), (int)(p0.Y * uMatrix.Cols * 0.81)));
 
-            using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints))
+            polygonPoints.Add(new Drawing.Point(0, 0));
+
+            using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
             using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
             {
                 CvInvoke.FillPoly(uMatrix, vvPoint, new Bgr(0, 0, 0).MCvScalar);

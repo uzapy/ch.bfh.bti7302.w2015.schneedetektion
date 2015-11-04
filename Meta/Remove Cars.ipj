@@ -1,0 +1,257 @@
+{
+    "author": "uzapy",
+    "edges": [
+        {
+            "from": 1,
+            "indexFrom": 0,
+            "indexTo": 0,
+            "to": 3
+        },
+        {
+            "from": 1,
+            "indexFrom": 0,
+            "indexTo": 0,
+            "to": 4
+        },
+        {
+            "from": 2,
+            "indexFrom": 0,
+            "indexTo": 1,
+            "to": 4
+        },
+        {
+            "from": 2,
+            "indexFrom": 0,
+            "indexTo": 1,
+            "to": 3
+        },
+        {
+            "from": 2,
+            "indexFrom": 0,
+            "indexTo": 0,
+            "to": 5
+        },
+        {
+            "from": 1,
+            "indexFrom": 0,
+            "indexTo": 1,
+            "to": 5
+        },
+        {
+            "from": 3,
+            "indexFrom": 0,
+            "indexTo": 0,
+            "to": 6
+        },
+        {
+            "from": 5,
+            "indexFrom": 0,
+            "indexTo": 1,
+            "to": 6
+        },
+        {
+            "from": 5,
+            "indexFrom": 0,
+            "indexTo": 1,
+            "to": 6
+        },
+        {
+            "from": 6,
+            "indexFrom": 0,
+            "indexTo": 0,
+            "to": 7
+        },
+        {
+            "from": 4,
+            "indexFrom": 0,
+            "indexTo": 1,
+            "to": 7
+        }
+    ],
+    "steps": [
+        {
+            "ID": 1,
+            "posX": 64,
+            "posY": 64,
+            "properties": [
+                {
+                    "key": "mode",
+                    "type": "int",
+                    "value": "0",
+                    "widget": "24",
+                    "widgetName": "IPL_WIDGET_GROUP"
+                },
+                {
+                    "key": "path",
+                    "type": "string",
+                    "value": "C:/Users/uzapy/Desktop/astra/mvk021/20150317/mvk021_20150317_120001.jpg",
+                    "widget": "12",
+                    "widgetName": "IPL_WIDGET_FILE_OPEN"
+                },
+                {
+                    "key": "raw_format",
+                    "type": "int",
+                    "value": "0",
+                    "widget": "4",
+                    "widgetName": "IPL_WIDGET_COMBOBOX"
+                },
+                {
+                    "key": "raw_height",
+                    "type": "int",
+                    "value": "512",
+                    "widget": "5",
+                    "widgetName": "IPL_WIDGET_SLIDER"
+                },
+                {
+                    "key": "raw_interleaved",
+                    "type": "int",
+                    "value": "0",
+                    "widget": "4",
+                    "widgetName": "IPL_WIDGET_COMBOBOX"
+                },
+                {
+                    "key": "raw_width",
+                    "type": "int",
+                    "value": "512",
+                    "widget": "5",
+                    "widgetName": "IPL_WIDGET_SLIDER"
+                }
+            ],
+            "type": "IPLLoadImage"
+        },
+        {
+            "ID": 2,
+            "posX": 448,
+            "posY": 64,
+            "properties": [
+                {
+                    "key": "mode",
+                    "type": "int",
+                    "value": "0",
+                    "widget": "24",
+                    "widgetName": "IPL_WIDGET_GROUP"
+                },
+                {
+                    "key": "path",
+                    "type": "string",
+                    "value": "C:/Users/uzapy/Desktop/astra/mvk021/20150317/mvk021_20150317_105001.jpg",
+                    "widget": "12",
+                    "widgetName": "IPL_WIDGET_FILE_OPEN"
+                },
+                {
+                    "key": "raw_format",
+                    "type": "int",
+                    "value": "0",
+                    "widget": "4",
+                    "widgetName": "IPL_WIDGET_COMBOBOX"
+                },
+                {
+                    "key": "raw_height",
+                    "type": "int",
+                    "value": "512",
+                    "widget": "5",
+                    "widgetName": "IPL_WIDGET_SLIDER"
+                },
+                {
+                    "key": "raw_interleaved",
+                    "type": "int",
+                    "value": "0",
+                    "widget": "4",
+                    "widgetName": "IPL_WIDGET_COMBOBOX"
+                },
+                {
+                    "key": "raw_width",
+                    "type": "int",
+                    "value": "512",
+                    "widget": "5",
+                    "widgetName": "IPL_WIDGET_SLIDER"
+                }
+            ],
+            "type": "IPLLoadImage"
+        },
+        {
+            "ID": 3,
+            "posX": 64,
+            "posY": 192,
+            "properties": [
+                {
+                    "key": "operation",
+                    "type": "int",
+                    "value": "4",
+                    "widget": "3",
+                    "widgetName": "IPL_WIDGET_RADIOBUTTONS"
+                }
+            ],
+            "type": "IPLArithmeticOperations"
+        },
+        {
+            "ID": 4,
+            "posX": 320,
+            "posY": 320,
+            "properties": [
+                {
+                    "key": "operation",
+                    "type": "int",
+                    "value": "2",
+                    "widget": "3",
+                    "widgetName": "IPL_WIDGET_RADIOBUTTONS"
+                }
+            ],
+            "type": "IPLArithmeticOperations"
+        },
+        {
+            "ID": 5,
+            "posX": 448,
+            "posY": 192,
+            "properties": [
+                {
+                    "key": "operation",
+                    "type": "int",
+                    "value": "1",
+                    "widget": "3",
+                    "widgetName": "IPL_WIDGET_RADIOBUTTONS"
+                }
+            ],
+            "type": "IPLArithmeticOperations"
+        },
+        {
+            "ID": 6,
+            "posX": 192,
+            "posY": 320,
+            "properties": [
+                {
+                    "key": "operation",
+                    "type": "int",
+                    "value": "5",
+                    "widget": "3",
+                    "widgetName": "IPL_WIDGET_RADIOBUTTONS"
+                }
+            ],
+            "type": "IPLArithmeticOperations"
+        },
+        {
+            "ID": 7,
+            "posX": 256,
+            "posY": 576,
+            "properties": [
+                {
+                    "key": "operation",
+                    "type": "int",
+                    "value": "0",
+                    "widget": "3",
+                    "widgetName": "IPL_WIDGET_RADIOBUTTONS"
+                }
+            ],
+            "type": "IPLArithmeticOperations"
+        },
+        {
+            "ID": 8,
+            "posX": 0,
+            "posY": 448,
+            "properties": [
+            ],
+            "type": "IPLBinarizeEntropy"
+        }
+    ],
+    "timestamp": 1445007788
+}

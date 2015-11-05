@@ -33,36 +33,7 @@ namespace Schneedetektion.OpenCV
                 });
             }
 
-            // Element finden, das am nächsten zum Nullpunkt ist
-            Point p0 = scaledPoints.OrderBy(p => Math.Sqrt(Math.Pow(p.X, 2) + Math.Pow(p.Y, 2))).First();
-
-            // Create Polygon
-            polygonPoints = new List<Drawing.Point>();
-
-            polygonPoints.Add(new Drawing.Point(0, 0));
-            polygonPoints.Add(new Drawing.Point(0, uMatrix.Rows));
-            polygonPoints.Add(new Drawing.Point(uMatrix.Cols, uMatrix.Rows));
-            polygonPoints.Add(new Drawing.Point(uMatrix.Cols, 0));
-            polygonPoints.Add(new Drawing.Point(0, 0));
-
-            // Punkte in der richtigen Reihenfolge laden
-            int element = scaledPoints.IndexOf(p0);
-            int i = element;
-            while (i < scaledPoints.Count)
-            {
-                polygonPoints.Add(new Drawing.Point((int)(scaledPoints[i].X),(int)(scaledPoints[i].Y)));
-                i++;
-            }
-            int j = 0;
-            while (j < element)
-            {
-                polygonPoints.Add(new Drawing.Point((int)(scaledPoints[j].X), (int)(scaledPoints[j].Y)));
-                j++;
-            }
-
-            // Noch einmal zu Ursprung zurück
-            polygonPoints.Add(new Drawing.Point((int)(p0.X), (int)(p0.Y)));
-            polygonPoints.Add(new Drawing.Point(0, 0));
+            polygonPoints = GetPolygonPoints(scaledPoints, uMatrix.Rows, uMatrix.Cols);
 
             // Apply Polygon
             using (VectorOfPoint vPoint = new VectorOfPoint(polygonPoints.ToArray()))
@@ -83,6 +54,41 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(image.Bitmap);
         }
 
+        private List<Drawing.Point> GetPolygonPoints(List<Point> scaledPoints, int numberOfRows, int numberOfCols)
+        {
+            // Element finden, das am nächsten zum Nullpunkt ist
+            Point p0 = scaledPoints.OrderBy(p => Math.Sqrt(Math.Pow(p.X, 2) + Math.Pow(p.Y, 2))).First();
+
+            // Create Polygon
+            List<Drawing.Point> polygon = new List<Drawing.Point>();
+            polygon.Add(new Drawing.Point(0, 0));
+            polygon.Add(new Drawing.Point(0, numberOfRows));
+            polygon.Add(new Drawing.Point(numberOfCols, numberOfRows));
+            polygon.Add(new Drawing.Point(numberOfCols, 0));
+            polygon.Add(new Drawing.Point(0, 0));
+
+            // Punkte in der richtigen Reihenfolge laden
+            int element = scaledPoints.IndexOf(p0);
+            int i = element;
+            while (i < scaledPoints.Count)
+            {
+                polygon.Add(new Drawing.Point((int)(scaledPoints[i].X), (int)(scaledPoints[i].Y)));
+                i++;
+            }
+            int j = 0;
+            while (j < element)
+            {
+                polygon.Add(new Drawing.Point((int)(scaledPoints[j].X), (int)(scaledPoints[j].Y)));
+                j++;
+            }
+
+            // Noch einmal zu Ursprung zurück
+            polygon.Add(new Drawing.Point((int)(p0.X), (int)(p0.Y)));
+            polygon.Add(new Drawing.Point(0, 0));
+
+            return polygon;
+        }
+
         public BitmapImage BitmapToBitmapImage(Drawing.Bitmap bitmap)
         {
             BitmapImage resultImage;
@@ -99,6 +105,32 @@ namespace Schneedetektion.OpenCV
                 resultImage.EndInit();
             }
             return resultImage;
+        }
+
+        public BitmapImage CalculateAverage(IList<string> images)
+        {
+            UMat matrix0 = new Mat(images[0], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            UMat matrix1 = new Mat(images[1], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            UMat matrixResult1 = new UMat();
+            CvInvoke.AddWeighted(matrix0, 0.5, matrix1, 0.5, 0, matrixResult1);
+
+            UMat matrix2 = new Mat(images[2], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            UMat matrix3 = new Mat(images[3], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            UMat matrixResult2 = new UMat();
+            CvInvoke.AddWeighted(matrix2, 0.5, matrix3, 0.5, 0, matrixResult2);
+
+            UMat matrix4 = new Mat(images[4], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            UMat matrix5 = new Mat(images[5], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            UMat matrixResult3 = new UMat();
+            CvInvoke.AddWeighted(matrix4, 0.5, matrix5, 0.5, 0, matrixResult3);
+
+            UMat matrixResult4 = new UMat();
+            CvInvoke.AddWeighted(matrixResult1, 0.5, matrixResult2, 0.5, 0, matrixResult4);
+
+            UMat matrixResult5 = new UMat();
+            CvInvoke.AddWeighted(matrixResult3, 0.333, matrixResult4, 0.666, 0, matrixResult5);
+
+            return BitmapToBitmapImage(matrixResult5.Bitmap);
         }
     }
 }

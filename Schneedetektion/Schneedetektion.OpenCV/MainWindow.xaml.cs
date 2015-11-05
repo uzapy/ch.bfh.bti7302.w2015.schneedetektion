@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using System;
 
 namespace Schneedetektion.OpenCV
 {
@@ -15,7 +16,11 @@ namespace Schneedetektion.OpenCV
         {
             InitializeComponent();
 
-            // Polygon Laden
+            ApplyMask();
+        }
+
+        private void ApplyMask()
+        {
             Polygon polygon = dataContext.Polygons.Where(p => p.CameraName == "mvk120" && p.ImageArea == "Lane").FirstOrDefault();
             PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
 

@@ -13,12 +13,12 @@ namespace Schneedetektion.OpenCV
         OpenCVHelper openCVHelper = new OpenCVHelper();
         string imagePath = @"C:\Users\uzapy\Desktop\astra\mvk120\20141204\mvk120_20141204_084001.jpg";
 
-        string imagePath0 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_075001.jpg";
-        string imagePath1 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_080002.jpg";
-        string imagePath2 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_081001.jpg";
-        string imagePath3 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_082002.jpg";
-        string imagePath4 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_083001.jpg";
-        string imagePath5 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_084001.jpg";
+        string imagePath0 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_080002.jpg";
+        string imagePath1 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_081001.jpg";
+        string imagePath2 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_082002.jpg";
+        string imagePath3 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_083001.jpg";
+        string imagePath4 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_084001.jpg";
+        string imagePath5 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_085001.jpg";
 
         public MainWindow()
         {

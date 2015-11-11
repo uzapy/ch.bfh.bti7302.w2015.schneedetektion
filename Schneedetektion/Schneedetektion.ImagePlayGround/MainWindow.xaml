@@ -3,10 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Schneedetektion.ImagePlayGround"
-	   xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Schneedetektion Playground" Height="800" Width="1000"
-	   WindowState="Maximized"
-	   PreviewKeyDown="Window_PreviewKeyDown" Icon="warning.ico" >
+        xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Schneedetektion Playground" Height="800" Width="1000" WindowState="Maximized"
+        PreviewKeyDown="Window_PreviewKeyDown" Icon="warning.ico" >
     <Grid>
         <GroupBox x:Name="groupBox0" Header="By date" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" >
             <DatePicker x:Name="datePicker" Width="110" DisplayDateEnd="2015-06-10" DisplayDateStart="2014-12-02" FirstDayOfWeek="Monday" DisplayDate="2014-12-02" TabIndex="1" SelectedDateChanged="DatePicker_SelectedDateChanged"/>

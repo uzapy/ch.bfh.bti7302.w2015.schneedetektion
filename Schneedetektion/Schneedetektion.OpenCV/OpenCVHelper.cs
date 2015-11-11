@@ -109,28 +109,68 @@ namespace Schneedetektion.OpenCV
 
         public BitmapImage CalculateAverage(IList<string> images)
         {
-            UMat matrix0 = new Mat(images[0], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
-            UMat matrix1 = new Mat(images[1], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
-            UMat matrixResult1 = new UMat();
-            CvInvoke.AddWeighted(matrix0, 0.5, matrix1, 0.5, 0, matrixResult1);
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(images[0]);
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(images[1]);
 
-            UMat matrix2 = new Mat(images[2], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
-            UMat matrix3 = new Mat(images[3], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
-            UMat matrixResult2 = new UMat();
-            CvInvoke.AddWeighted(matrix2, 0.5, matrix3, 0.5, 0, matrixResult2);
+            Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
-            UMat matrix4 = new Mat(images[4], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
-            UMat matrix5 = new Mat(images[5], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
-            UMat matrixResult3 = new UMat();
-            CvInvoke.AddWeighted(matrix4, 0.5, matrix5, 0.5, 0, matrixResult3);
+            result1 = image0.AbsDiff(image1);
+            result1._ThresholdBinaryInv(new Bgr(75, 75, 75), new Bgr(255, 255, 255));
 
-            UMat matrixResult4 = new UMat();
-            CvInvoke.AddWeighted(matrixResult1, 0.5, matrixResult2, 0.5, 0, matrixResult4);
+            CvInvoke.cvCopy(image1, result1, result1);
 
-            UMat matrixResult5 = new UMat();
-            CvInvoke.AddWeighted(matrixResult3, 0.333, matrixResult4, 0.666, 0, matrixResult5);
+            return BitmapToBitmapImage(result1.Bitmap);
+            
+            // ------------------------------------------------------------------------------------//
 
-            return BitmapToBitmapImage(matrixResult5.Bitmap);
+            //for (int i = 0; i < 288; i++)
+            //{
+            //    for (int j = 0; j < 352; j++)
+            //    {
+            //        result.Data[i, j, 0] = (byte)Math.Abs(image0.Data[i, j, 0] - image1.Data[i, j, 0]);
+            //        result.Data[i, j, 1] = (byte)Math.Abs(image0.Data[i, j, 1] - image1.Data[i, j, 1]);
+            //        result.Data[i, j, 2] = (byte)Math.Abs(image0.Data[i, j, 2] - image1.Data[i, j, 2]);
+            //    }
+            //}
+
+            // ------------------------------------------------------------------------------------//
+
+            //UMat matrix0 = new Mat(images[0], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix1 = new Mat(images[1], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrixResult1 = new UMat();
+            //CvInvoke.AddWeighted(matrix0, 0.5, matrix1, 0.5, 0, matrixResult1);
+
+            //UMat matrix2 = new Mat(images[2], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix3 = new Mat(images[3], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrixResult2 = new UMat();
+            //CvInvoke.AddWeighted(matrix2, 0.5, matrix3, 0.5, 0, matrixResult2);
+
+            //UMat matrix4 = new Mat(images[4], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix5 = new Mat(images[5], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrixResult3 = new UMat();
+            //CvInvoke.AddWeighted(matrix4, 0.5, matrix5, 0.5, 0, matrixResult3);
+
+            //UMat matrixResult4 = new UMat();
+            //CvInvoke.AddWeighted(matrixResult1, 0.5, matrixResult2, 0.5, 0, matrixResult4);
+
+            //UMat matrixResult5 = new UMat();
+            //CvInvoke.AddWeighted(matrixResult3, 0.333, matrixResult4, 0.666, 0, matrixResult5);
+
+            //return BitmapToBitmapImage(matrixResult5.Bitmap);
+
+            // ------------------------------------------------------------------------------------//
+
+            //UMat matrix0 = new Mat(images[0], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix1 = new Mat(images[1], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix2 = new Mat(images[2], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix3 = new Mat(images[3], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix4 = new Mat(images[4], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+            //UMat matrix5 = new Mat(images[5], LoadImageType.AnyColor).ToUMat(AccessType.ReadWrite);
+
+            //Mat matrix = new Mat(new Drawing.Size(352, 288), DepthType.Cv8U, 3);
+            //return BitmapToBitmapImage(matrix.Bitmap);
+
+            // ------------------------------------------------------------------------------------//
         }
     }
 }

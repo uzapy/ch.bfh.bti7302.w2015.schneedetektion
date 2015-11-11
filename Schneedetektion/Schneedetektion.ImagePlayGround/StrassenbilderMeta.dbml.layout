@@ -2,12 +2,6 @@
 <ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="StrassenbilderMeta">
   <DataContextMoniker Name="/StrassenbilderMetaDataContext" />
   <nestedChildShapes>
-    <classShape Id="2de72520-6266-48cf-821e-07034494cac0" absoluteBounds="0.875, 0.875, 2, 1.5785953776041666">
-      <DataClassMoniker Name="/StrassenbilderMetaDataContext/Image" />
-      <nestedChildShapes>
-        <elementListCompartment Id="bb72e78b-50bd-45af-a007-400a797c1bdb" absoluteBounds="0.89000000000000012, 1.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
-      </nestedChildShapes>
-    </classShape>
     <classShape Id="5b4d5a8b-d307-40d0-b0b1-aed075636ff6" absoluteBounds="3.125, 0.875, 2, 1.9631982421875">
       <DataClassMoniker Name="/StrassenbilderMetaDataContext/Camera" />
       <nestedChildShapes>
@@ -18,6 +12,12 @@
       <DataClassMoniker Name="/StrassenbilderMetaDataContext/Polygon" />
       <nestedChildShapes>
         <elementListCompartment Id="cad69a6c-eba1-4bc5-b994-b6030a992d08" absoluteBounds="5.515, 1.335, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1cec9615-2f13-4735-8761-ec8b88be774d" absoluteBounds="0.75, 0.875, 2, 2.1554996744791666">
+      <DataClassMoniker Name="/StrassenbilderMetaDataContext/Image" />
+      <nestedChildShapes>
+        <elementListCompartment Id="9fa8e754-6fb2-412d-8806-ab51328ddf1a" absoluteBounds="0.76500000000000012, 1.335, 1.9700000000000002, 1.5954996744791665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
   </nestedChildShapes>

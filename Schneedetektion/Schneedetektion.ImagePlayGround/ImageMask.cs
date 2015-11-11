@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Schneedetektion.ImagePlayGround.Properties;
 using Schneedetektion.OpenCV;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -26,13 +28,18 @@ namespace Schneedetektion.ImagePlayGround
             }
         }
 
-        internal BitmapImage ApplyMasks(Image imageName)
+        internal Image ApplyMask(Image imageName)
         {
             string imageFilePath = folderName + "\\" + imageName.Place + "\\" + imageName.Name.Substring(7, 8) + "\\" + imageName.Name + ".jpg";
             Polygon polygon = savedPolygons.Where(p => p.CameraName == imageName.Place).FirstOrDefault();
-            PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
 
-            return openCVHelper.GetMaskedImage(imageFilePath, pointCollection);
+            if (polygon != null)
+            {
+                PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
+                imageName.Bitmap = openCVHelper.GetMaskedImage(imageFilePath, pointCollection);
+            }
+
+            return imageName;
         }
     }
 }

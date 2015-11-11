@@ -13,14 +13,13 @@ namespace Schneedetektion.ImagePlayGround
 {
     public partial class MainWindow : Window
     {
-        private static string folderName = Settings.Default.WorkingFolder;
+        public static string folderName = Settings.Default.WorkingFolder;
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
 
         private ObservableCollection<string> cameraNames = new ObservableCollection<string>() { "all" };
         private List<string> selectedCameras = new List<string>() { "all" };
         private List<string> selectedMasks = new List<string>();
-        private IEnumerable<Image> imageNames = new List<Image>();
-        private ObservableCollection<BitmapImage> images = new ObservableCollection<BitmapImage>();
+        private ObservableCollection<Image> images = new ObservableCollection<Image>();
         private Image selectedImage;
 
         private DispatcherTimer timer = new DispatcherTimer();
@@ -48,14 +47,12 @@ namespace Schneedetektion.ImagePlayGround
                 cameraNames.Add(camera.Name);
             }
 
-            imageNames = dataContext.Images.Where(i => i.Place == cameraNames[1]).Take(265);
-
-            foreach (Image imageName in imageNames)
+            foreach (Image i in dataContext.Images.Where(i => i.Place == cameraNames[1]).Take(265))
             {
-                images.Add(GetBitmap(imageName));
+                images.Add(i);
             }
 
-            timeLapesImage.Source = images.First();
+            timeLapesImage.Source = images.First().Bitmap;
             slider1.Maximum = images.Count - 1;
             #endregion
 
@@ -109,7 +106,7 @@ namespace Schneedetektion.ImagePlayGround
 
         private void slider1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            timeLapesImage.Source = images[(int)slider1.Value];
+            timeLapesImage.Source = images[(int)slider1.Value].Bitmap;
         }
 
         private void listBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -161,9 +158,9 @@ namespace Schneedetektion.ImagePlayGround
         {
             if (imageContainer.SelectedIndex >= 0)
             {
-                if (selectedImage?.Place != imageNames.ElementAt(imageContainer.SelectedIndex).Place)
+                if (selectedImage?.Place != images[imageContainer.SelectedIndex].Place)
                 {
-                    selectedImage = imageNames.ElementAt(imageContainer.SelectedIndex);
+                    selectedImage = images[imageContainer.SelectedIndex];
                     polygonHandler.loadSavedPolygons(selectedImage);
                     selectedCameraName.Text = "Camera: " + selectedImage.Place;
                 }
@@ -216,44 +213,32 @@ namespace Schneedetektion.ImagePlayGround
             TimeSpan minuteSpan = new TimeSpan(0, 16, 0);
             DateTime exactTime = new DateTime(year, month, day, hour, minute, 0);
 
-            imageNames = (from i in dataContext.Images
-                          where i.DateTime.Year == year || !hasDate
-                          where i.DateTime.Month == month || !hasDate
-                          where i.DateTime.Day == day || !hasDate
-                          where i.DateTime.Hour == hour || !hasTime
-                          where Math.Abs(i.DateTime.Minute - minute) < 6 || !hasTime
-                          where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
-                          select i).Distinct().Take(512);
+            var loadedImages = (from i in dataContext.Images
+                                where i.DateTime.Year == year || !hasDate
+                                where i.DateTime.Month == month || !hasDate
+                                where i.DateTime.Day == day || !hasDate
+                                where i.DateTime.Hour == hour || !hasTime
+                                where Math.Abs(i.DateTime.Minute - minute) < 6 || !hasTime
+                                where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
+                                select i).Distinct().Take(512);
 
             if (selectedMasks.Count < 1)
             {
-                foreach (Image imageName in imageNames)
+                foreach (Image i in loadedImages)
                 {
-                    images.Add(GetBitmap(imageName));
+                    images.Add(i);
                 }
             }
             else
             {
-                foreach (Image imageName in imageNames)
+                foreach (Image i in loadedImages)
                 {
-                    images.Add(imageMask.ApplyMasks(imageName));
+                    images.Add(imageMask.ApplyMask(i));
                 }
             }
 
             slider1.Maximum = images.Count - 1;
-            timeLapesImage.Source = images[(int)slider1.Value];
-        }
-
-        private BitmapImage GetBitmap(Image image)
-        {
-            try
-            {
-                return new BitmapImage(new Uri(folderName + "\\" + image.Place + "\\" + image.Name.Substring(7, 8) + "\\" + image.Name + ".jpg"));
-            }
-            catch (Exception)
-            {
-                return new BitmapImage();
-            }
+            timeLapesImage.Source = images[(int)slider1.Value].Bitmap;
         }
         #endregion
     }

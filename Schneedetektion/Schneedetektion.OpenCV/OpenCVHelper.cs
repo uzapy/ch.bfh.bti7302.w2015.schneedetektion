@@ -229,5 +229,43 @@ namespace Schneedetektion.OpenCV
                 dataContext.SubmitChanges();
             }
         }
+
+        public short Calculate(string imageFilePath, Polygon polygon, Media.PointCollection pointCollection)
+        {
+            // Maskiertes Bild laden
+            Drawing.Bitmap maskedBitmap = GetMaskedBitmap(imageFilePath, pointCollection);
+
+            Image<Bgr, byte> cvImage = new Image<Bgr, byte>(maskedBitmap);
+
+            Mat matMask = new Mat(new Drawing.Size(cvImage.Cols, cvImage.Rows), DepthType.Cv8U, 3);
+            List<Point> scaledPoints = GetScaledPoints(pointCollection, cvImage.Rows, cvImage.Cols);
+            List<Drawing.Point> scaledDrawingPoints = GetPolygonPoints(scaledPoints, cvImage.Rows, cvImage.Cols);
+            using (VectorOfPoint vPoint = new VectorOfPoint(scaledDrawingPoints.ToArray()))
+            using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
+            {
+                CvInvoke.FillPoly(matMask, vvPoint, new Bgr(255, 255, 255).MCvScalar);
+            }
+            Image<Gray, byte> imageMask = new Image<Gray, byte>(matMask.Bitmap);
+
+            Bgr result = cvImage.GetAverage(imageMask);
+            Bgr snow = JsonConvert.DeserializeObject<Bgr>(polygon.BgrSnow);
+            Bgr normal = JsonConvert.DeserializeObject<Bgr>(polygon.BgrNormal);
+
+            double resultSnow = Math.Abs(snow.Blue - result.Blue) + Math.Abs(snow.Green - result.Green) + Math.Abs(snow.Red - result.Red);
+            double resultNormal = Math.Abs(normal.Blue - result.Blue) + Math.Abs(normal.Green - result.Green) + Math.Abs(normal.Red - result.Red);
+
+            if (Math.Abs(resultSnow - resultNormal) < 10)
+            {
+                return 0;
+            }
+            else if (resultSnow < resultNormal)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
     }
 }

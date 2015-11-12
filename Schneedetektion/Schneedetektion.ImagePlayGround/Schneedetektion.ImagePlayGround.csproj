@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>warning.ico</ApplicationIcon>
+    <ApplicationIcon>resources\warning.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -140,7 +140,7 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="warning.ico" />
+    <Resource Include="resources\warning.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Schneedetektion.Data\Schneedetektion.Data.csproj">

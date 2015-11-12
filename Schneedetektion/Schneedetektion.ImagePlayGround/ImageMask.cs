@@ -18,7 +18,10 @@ namespace Schneedetektion.ImagePlayGround
 
         public List<string> ActiveMasks
         {
-            get { return activeMasks; }
+            get
+            {
+                return activeMasks;
+            }
             internal set
             {
                 activeMasks = value;
@@ -26,18 +29,24 @@ namespace Schneedetektion.ImagePlayGround
             }
         }
 
-        internal Image ApplyMask(Image imageName)
+        internal Image ApplyMask(Image image)
         {
-            string imageFilePath = folderName + "\\" + imageName.Place + "\\" + imageName.Name.Substring(7, 8) + "\\" + imageName.Name + ".jpg";
-            Polygon polygon = savedPolygons.Where(p => p.CameraName == imageName.Place).FirstOrDefault();
+            string imageFilePath = folderName + "\\" + image.Place + "\\" + image.Name.Substring(7, 8) + "\\" + image.Name + ".jpg";
+            Polygon polygon = savedPolygons.Where(p => p.CameraName == image.Place).FirstOrDefault();
 
             if (polygon != null)
             {
                 PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
-                imageName.Bitmap = openCVHelper.GetMaskedImage(imageFilePath, pointCollection);
+                image.Bitmap = openCVHelper.GetMaskedImage(imageFilePath, pointCollection);
             }
 
-            return imageName;
+            if (!string.IsNullOrEmpty(polygon.BgrSnow) && ! string.IsNullOrEmpty(polygon.BgrNormal))
+            {
+                PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
+                image.Snow = openCVHelper.Calculate(imageFilePath, polygon, pointCollection);
+            }
+
+            return image;
         }
     }
 }

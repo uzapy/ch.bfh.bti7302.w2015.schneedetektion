@@ -1,4 +1,5 @@
-﻿using Schneedetektion.GatherData.Properties;
+﻿using Schneedetektion.Data;
+using Schneedetektion.GatherData.Properties;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

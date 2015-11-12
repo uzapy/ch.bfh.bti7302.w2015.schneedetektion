@@ -2,6 +2,8 @@
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using Newtonsoft.Json;
+using Schneedetektion.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Drawing = System.Drawing;
+using Media = System.Windows.Media;
 
 namespace Schneedetektion.OpenCV
 {
@@ -19,19 +22,18 @@ namespace Schneedetektion.OpenCV
 
         public BitmapImage GetMaskedImage(string imagePath, IList<Point> pointCollection)
         {
+            Drawing.Bitmap bitmap = GetMaskedBitmap(imagePath, pointCollection);
+
+            return BitmapToBitmapImage(bitmap);
+        }
+
+        private Drawing.Bitmap GetMaskedBitmap(string imagePath, IList<Point> pointCollection)
+        {
             Mat matrix = new Mat(imagePath, LoadImageType.AnyColor);
             UMat uMatrix = matrix.ToUMat(AccessType.ReadWrite);
 
             // Scale Polygon
-            List<Point> scaledPoints = new List<Point>();
-            foreach (var point in pointCollection)
-            {
-                scaledPoints.Add(new Point()
-                {
-                    X = point.X * uMatrix.Rows * 1.21,
-                    Y = point.Y * uMatrix.Cols * 0.81
-                });
-            }
+            List<Point> scaledPoints = GetScaledPoints(pointCollection, uMatrix.Rows, uMatrix.Cols);
 
             polygonPoints = GetPolygonPoints(scaledPoints, uMatrix.Rows, uMatrix.Cols);
 
@@ -51,7 +53,21 @@ namespace Schneedetektion.OpenCV
             Image<Bgr, byte> image = new Image<Bgr, byte>(uMatrix.Bitmap);
             image.ROI = new Drawing.Rectangle(left, top, width, height);
 
-            return BitmapToBitmapImage(image.Bitmap);
+            return image.Bitmap;
+        }
+
+        private List<Point> GetScaledPoints(IEnumerable<Point> polygonPoints, int numberOfRows, int numberOfCols)
+        {
+            List<Point> scaledPoints = new List<Point>();
+            foreach (var point in polygonPoints)
+            {
+                scaledPoints.Add(new Point()
+                {
+                    X = point.X * numberOfRows * 1.21,
+                    Y = point.Y * numberOfCols * 0.81
+                });
+            }
+            return scaledPoints;
         }
 
         private List<Drawing.Point> GetPolygonPoints(List<Point> scaledPoints, int numberOfRows, int numberOfCols)
@@ -89,7 +105,7 @@ namespace Schneedetektion.OpenCV
             return polygon;
         }
 
-        public BitmapImage BitmapToBitmapImage(Drawing.Bitmap bitmap)
+        private BitmapImage BitmapToBitmapImage(Drawing.Bitmap bitmap)
         {
             BitmapImage resultImage;
 
@@ -120,7 +136,7 @@ namespace Schneedetektion.OpenCV
             CvInvoke.cvCopy(image1, result1, result1);
 
             return BitmapToBitmapImage(result1.Bitmap);
-            
+
             // ------------------------------------------------------------------------------------//
 
             //for (int i = 0; i < 288; i++)
@@ -171,6 +187,47 @@ namespace Schneedetektion.OpenCV
             //return BitmapToBitmapImage(matrix.Bitmap);
 
             // ------------------------------------------------------------------------------------//
+        }
+
+        public void CalculateAverageBrightessForArea(string reference0, string reference1, StrassenbilderMetaDataContext dataContext)
+        {
+            // Image-Meta-Daten laden
+            string name0 = Path.GetFileNameWithoutExtension(reference0);
+            string name1 = Path.GetFileNameWithoutExtension(reference1);
+            Image image0 = dataContext.Images.Where(i => i.Name == name0).FirstOrDefault();
+            Image image1 = dataContext.Images.Where(i => i.Name == name1).FirstOrDefault();
+
+            // Polygone Laden
+            IEnumerable<Polygon> polygons = dataContext.Polygons.Where(p => p.CameraName == image0.Place);
+
+            // Pro Maske anwenden
+            foreach (var polygon in polygons)
+            {
+                IList<Point> polygonPoints = JsonConvert.DeserializeObject<Media.PointCollection>(polygon.PolygonPointCollection);
+
+                // Maskiertes Bild laden
+                Drawing.Bitmap bitmap0 = GetMaskedBitmap(reference0, polygonPoints);
+                Drawing.Bitmap bitmap1 = GetMaskedBitmap(reference1, polygonPoints);
+
+                Image<Bgr, byte> cvImage0 = new Image<Bgr, byte>(bitmap0);
+                Image<Bgr, byte> cvImage1 = new Image<Bgr, byte>(bitmap1);
+
+                Mat matMask = new Mat(new Drawing.Size(cvImage0.Cols, cvImage0.Rows), DepthType.Cv8U, 3);
+                List<Point> scaledPoints = GetScaledPoints(polygonPoints, cvImage0.Rows, cvImage0.Cols);
+                List<Drawing.Point> scaledDrawingPoints = GetPolygonPoints(scaledPoints, cvImage0.Rows, cvImage0.Cols);
+                using (VectorOfPoint vPoint = new VectorOfPoint(scaledDrawingPoints.ToArray()))
+                using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
+                {
+                    CvInvoke.FillPoly(matMask, vvPoint, new Bgr(255, 255, 255).MCvScalar);
+                }
+                Image<Gray, byte> imageMask = new Image<Gray, byte>(matMask.Bitmap);
+
+                Bgr result0 = cvImage0.GetAverage(imageMask);
+                Bgr result1 = cvImage1.GetAverage(imageMask);
+                polygon.BgrSnow = JsonConvert.SerializeObject(result0);
+                polygon.BgrNormal = JsonConvert.SerializeObject(result1);
+                dataContext.SubmitChanges();
+            }
         }
     }
 }

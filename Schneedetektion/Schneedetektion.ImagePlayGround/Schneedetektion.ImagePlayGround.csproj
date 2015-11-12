@@ -88,15 +88,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Image.cs" />
     <Compile Include="ImageMask.cs" />
     <Compile Include="PolygonHandler.cs" />
     <Compile Include="SizeConverter.cs" />
-    <Compile Include="StrassenbilderMeta.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>StrassenbilderMeta.dbml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -131,19 +125,11 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="StrassenbilderMeta.dbml.layout">
-      <DependentUpon>StrassenbilderMeta.dbml</DependentUpon>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="StrassenbilderMeta.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>StrassenbilderMeta.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -157,6 +143,10 @@
     <Resource Include="warning.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Schneedetektion.Data\Schneedetektion.Data.csproj">
+      <Project>{0da988c8-3d71-4fa8-b0b5-e387fe7cd600}</Project>
+      <Name>Schneedetektion.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Schneedetektion.OpenCV\Schneedetektion.OpenCV.csproj">
       <Project>{698ff3d6-6293-4bb0-9ff6-f87669dd6b2e}</Project>
       <Name>Schneedetektion.OpenCV</Name>

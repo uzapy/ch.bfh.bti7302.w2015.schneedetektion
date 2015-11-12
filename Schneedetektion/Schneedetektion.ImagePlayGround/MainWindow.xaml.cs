@@ -1,4 +1,5 @@
-﻿using Schneedetektion.ImagePlayGround.Properties;
+﻿using Schneedetektion.Data;
+using Schneedetektion.ImagePlayGround.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Schneedetektion.ImagePlayGround
@@ -19,8 +19,8 @@ namespace Schneedetektion.ImagePlayGround
         private ObservableCollection<string> cameraNames = new ObservableCollection<string>() { "all" };
         private List<string> selectedCameras = new List<string>() { "all" };
         private List<string> selectedMasks = new List<string>();
-        private ObservableCollection<Image> images = new ObservableCollection<Image>();
-        private Image selectedImage;
+        private ObservableCollection<Data.Image> images = new ObservableCollection<Data.Image>();
+        private Data.Image selectedImage;
 
         private DispatcherTimer timer = new DispatcherTimer();
 
@@ -47,7 +47,7 @@ namespace Schneedetektion.ImagePlayGround
                 cameraNames.Add(camera.Name);
             }
 
-            foreach (Image i in dataContext.Images.Where(i => i.Place == cameraNames[1]).Take(265))
+            foreach (Data.Image i in dataContext.Images.Where(i => i.Place == cameraNames[1]).Take(265))
             {
                 images.Add(i);
             }
@@ -224,14 +224,14 @@ namespace Schneedetektion.ImagePlayGround
 
             if (selectedMasks.Count < 1)
             {
-                foreach (Image i in loadedImages)
+                foreach (Data.Image i in loadedImages)
                 {
                     images.Add(i);
                 }
             }
             else
             {
-                foreach (Image i in loadedImages)
+                foreach (Data.Image i in loadedImages)
                 {
                     images.Add(imageMask.ApplyMask(i));
                 }

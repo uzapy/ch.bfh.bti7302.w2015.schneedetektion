@@ -41,9 +41,15 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Image Source="{Binding Bitmap}" Width="{Binding ElementName=slider0, Path=Value}" />
-                                <Image Source="{Binding ResultIconSource}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                       Width="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}}" />
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=slider0, Path=Value}" />
+                                <TextBlock Grid.Row="1" Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                                           FontSize="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
+                                <Image Grid.Row="1" Source="{Binding ResultIconSource}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                       Width="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=10}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

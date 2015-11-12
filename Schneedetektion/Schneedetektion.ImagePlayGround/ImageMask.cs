@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Schneedetektion.ImagePlayGround.Properties;
 using Schneedetektion.OpenCV;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Schneedetektion.Data;
 
 namespace Schneedetektion.ImagePlayGround
 {
@@ -15,8 +13,8 @@ namespace Schneedetektion.ImagePlayGround
         OpenCVHelper openCVHelper = new OpenCVHelper();
         private static string folderName = Settings.Default.WorkingFolder;
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
-        public List<string> activeMasks = new List<string>();
         private List<Polygon> savedPolygons = new List<Polygon>();
+        public List<string> activeMasks = new List<string>();
 
         public List<string> ActiveMasks
         {

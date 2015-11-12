@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System;
-using System.Collections.Generic;
 
 namespace Schneedetektion.OpenCV
 {
@@ -20,13 +20,19 @@ namespace Schneedetektion.OpenCV
         string imagePath4 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_084001.jpg";
         string imagePath5 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_085001.jpg";
 
+        string reference0 = @"C:\Users\uzapy\Desktop\astra\mvk021\20141229\mvk021_20141229_141002.jpg"; // Snow
+        string reference1 = @"C:\Users\uzapy\Desktop\astra\mvk021\20150416\mvk021_20150416_144001.jpg"; // Not Snow
+
+
         public MainWindow()
         {
             InitializeComponent();
 
             //ApplyMask();
 
-            CalculateAverage();
+            //CalculateAverage();
+
+            CalculateAverageBrightessForArea();
         }
 
         private void ApplyMask()
@@ -40,6 +46,11 @@ namespace Schneedetektion.OpenCV
         {
             IList<string> images = new List<string>() { imagePath0, imagePath1, imagePath2, imagePath3, imagePath4, imagePath5, };
             maskedImage.Source = openCVHelper.CalculateAverage(images);
+        }
+
+        private void CalculateAverageBrightessForArea()
+        {
+            openCVHelper.CalculateAverageBrightessForArea(reference0, reference1, dataContext);
         }
     }
 }

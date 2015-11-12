@@ -8,12 +8,12 @@ namespace Schneedetektion.ImagePlayGround
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (double)value / 5;
+            return (double)value / double.Parse(parameter as string);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (double)value * 5;
+            return (double)value * double.Parse(parameter as string);
         }
     }
 }

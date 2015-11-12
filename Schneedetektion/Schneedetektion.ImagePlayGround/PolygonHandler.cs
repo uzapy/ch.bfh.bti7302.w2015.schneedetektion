@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -28,7 +28,7 @@ namespace Schneedetektion.ImagePlayGround
 
         public string[] ImageAreas { get { return imageAreas; } }
 
-        internal void newPolygon(Image selectedImage, int areaIndex)
+        internal void newPolygon(Data.Image selectedImage, int areaIndex)
         {
             polygonCanvas.Children.Remove(polygon);
             selectedCamera = selectedImage.Place;
@@ -41,7 +41,7 @@ namespace Schneedetektion.ImagePlayGround
             polygonCanvas.Children.Add(polygon);
         }
 
-        internal void loadSavedPolygons(Image selectedImage)
+        internal void loadSavedPolygons(Data.Image selectedImage)
         {
             selectedCamera = selectedImage.Place;
 

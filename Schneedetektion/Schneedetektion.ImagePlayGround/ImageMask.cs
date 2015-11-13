@@ -38,12 +38,11 @@ namespace Schneedetektion.ImagePlayGround
             {
                 PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
                 image.Bitmap = openCVHelper.GetMaskedImage(imageFilePath, pointCollection);
-            }
 
-            if (!string.IsNullOrEmpty(polygon.BgrSnow) && ! string.IsNullOrEmpty(polygon.BgrNormal))
-            {
-                PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
-                image.Snow = openCVHelper.Calculate(imageFilePath, polygon, pointCollection);
+                if (!string.IsNullOrEmpty(polygon.BgrSnow) && ! string.IsNullOrEmpty(polygon.BgrNormal))
+                {
+                    image.Snow = openCVHelper.Calculate(imageFilePath, polygon, pointCollection);
+                }
             }
 
             return image;

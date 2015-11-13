@@ -66,6 +66,8 @@ namespace Schneedetektion.ImagePlayGround
             listBox2.ItemsSource = polygonHandler.ImageAreas;
         }
 
+        public bool HasSelectedMasks { get { return selectedMasks.Count > 0; } }
+
         #region Event Handler
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -141,6 +143,10 @@ namespace Schneedetektion.ImagePlayGround
             else if (e.Key == Key.Right)
             {
                 slider1.Value++;
+            }
+            else if (e.Key == Key.Enter)
+            {
+                ReloadImages();
             }
         }
 

@@ -91,6 +91,7 @@
     <Compile Include="ImageMask.cs" />
     <Compile Include="PolygonHandler.cs" />
     <Compile Include="SizeConverter.cs" />
+    <Compile Include="VisibilityConverter.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

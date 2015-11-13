@@ -212,9 +212,12 @@ namespace Schneedetektion.OpenCV
                 Image<Bgr, byte> cvImage0 = new Image<Bgr, byte>(bitmap0);
                 Image<Bgr, byte> cvImage1 = new Image<Bgr, byte>(bitmap1);
 
+                // Maske generieren aus Polygon
                 Mat matMask = new Mat(new Drawing.Size(cvImage0.Cols, cvImage0.Rows), DepthType.Cv8U, 3);
+                // Polygone skalieren und generieren
                 List<Point> scaledPoints = GetScaledPoints(polygonPoints, cvImage0.Rows, cvImage0.Cols);
                 List<Drawing.Point> scaledDrawingPoints = GetPolygonPoints(scaledPoints, cvImage0.Rows, cvImage0.Cols);
+                // Polygon weiss zeichnen
                 using (VectorOfPoint vPoint = new VectorOfPoint(scaledDrawingPoints.ToArray()))
                 using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
                 {
@@ -222,8 +225,10 @@ namespace Schneedetektion.OpenCV
                 }
                 Image<Gray, byte> imageMask = new Image<Gray, byte>(matMask.Bitmap);
 
+                // Durchschnittsfarbe rechnen mit Maske
                 Bgr result0 = cvImage0.GetAverage(imageMask);
                 Bgr result1 = cvImage1.GetAverage(imageMask);
+                // Resultat abspeichern
                 polygon.BgrSnow = JsonConvert.SerializeObject(result0);
                 polygon.BgrNormal = JsonConvert.SerializeObject(result1);
                 dataContext.SubmitChanges();
@@ -237,9 +242,12 @@ namespace Schneedetektion.OpenCV
 
             Image<Bgr, byte> cvImage = new Image<Bgr, byte>(maskedBitmap);
 
+            // Maske generieren aus Polygon
             Mat matMask = new Mat(new Drawing.Size(cvImage.Cols, cvImage.Rows), DepthType.Cv8U, 3);
+            // Polygone skalieren und generieren
             List<Point> scaledPoints = GetScaledPoints(pointCollection, cvImage.Rows, cvImage.Cols);
             List<Drawing.Point> scaledDrawingPoints = GetPolygonPoints(scaledPoints, cvImage.Rows, cvImage.Cols);
+            // Polygon weiss zeichnen
             using (VectorOfPoint vPoint = new VectorOfPoint(scaledDrawingPoints.ToArray()))
             using (VectorOfVectorOfPoint vvPoint = new VectorOfVectorOfPoint(vPoint))
             {
@@ -247,7 +255,9 @@ namespace Schneedetektion.OpenCV
             }
             Image<Gray, byte> imageMask = new Image<Gray, byte>(matMask.Bitmap);
 
+            // Durchschnittsfarbe rechnen mit Maske
             Bgr result = cvImage.GetAverage(imageMask);
+            // Vergleichen mit Referenzbildern
             Bgr snow = JsonConvert.DeserializeObject<Bgr>(polygon.BgrSnow);
             Bgr normal = JsonConvert.DeserializeObject<Bgr>(polygon.BgrNormal);
 

@@ -9,6 +9,7 @@
 
     <Window.Resources>
         <local:SizeConverter x:Key="SizeConverter" />
+        <local:VisibilityConverter x:Key="VisibilityConverter" />
     </Window.Resources>
     
     <Grid>
@@ -41,14 +42,14 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Grid.RowDefinitions>
+                                <!--<Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
-                                </Grid.RowDefinitions>
+                                </Grid.RowDefinitions>-->
                                 <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=slider0, Path=Value}" />
-                                <TextBlock Grid.Row="1" Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White"
                                            FontSize="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
-                                <Image Grid.Row="1" Source="{Binding ResultIconSource}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                <Image Source="{Binding ResultIconSource}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                                        Width="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=10}" />
                             </Grid>
                         </DataTemplate>

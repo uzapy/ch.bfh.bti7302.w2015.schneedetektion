@@ -7,7 +7,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Schneedetektion.ImagePlayGround
@@ -222,7 +221,7 @@ namespace Schneedetektion.ImagePlayGround
 
         private void step_Click(object sender, RoutedEventArgs e)
         {
-            missingPieces.Source = imageHelper.ApplyNext(removeCarsGroup);
+            missingPieces.Source = imageHelper.ApplyNext(removeCarsGroup, missingPieces.Source);
             // TODO: Prozent anzeigen
         }
         #endregion

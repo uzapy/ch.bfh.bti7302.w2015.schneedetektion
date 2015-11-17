@@ -44,8 +44,8 @@ namespace Schneedetektion.OpenCV
 
         private void CalculateAverage()
         {
-            IList<string> images = new List<string>() { imagePath0, imagePath1, imagePath2, imagePath3, imagePath4, imagePath5, };
-            maskedImage.Source = openCVHelper.CalculateAverage(images);
+            //IList<string> images = new List<string>() { imagePath0, imagePath1, imagePath2, imagePath3, imagePath4, imagePath5, };
+            maskedImage.Source = openCVHelper.CalculateAbsoluteDifference(imagePath0, imagePath1);
         }
 
         private void CalculateAverageBrightessForArea()

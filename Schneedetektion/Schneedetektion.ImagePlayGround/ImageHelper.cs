@@ -4,11 +4,11 @@ using Schneedetektion.ImagePlayGround.Properties;
 using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Collections.ObjectModel;
-using System.IO;
 
 namespace Schneedetektion.ImagePlayGround
 {
@@ -43,7 +43,7 @@ namespace Schneedetektion.ImagePlayGround
                 PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
                 image.Bitmap = openCVHelper.GetMaskedImage(imageFilePath, pointCollection);
 
-                if (!string.IsNullOrEmpty(polygon.BgrSnow) && ! string.IsNullOrEmpty(polygon.BgrNormal))
+                if (!string.IsNullOrEmpty(polygon.BgrSnow) && !string.IsNullOrEmpty(polygon.BgrNormal))
                 {
                     image.Snow = openCVHelper.Calculate(imageFilePath, polygon, pointCollection);
                 }
@@ -56,11 +56,18 @@ namespace Schneedetektion.ImagePlayGround
             return image;
         }
 
-        internal ImageSource ApplyNext(ObservableCollection<Image> removeCarsGroup)
+        internal ImageSource ApplyNext(ObservableCollection<Image> removeCarsGroup, ImageSource currentMask)
         {
-            string imageFilePath = GetFilePath(removeCarsGroup.Last());
-            string[] files = Directory.GetFiles(GetDirectory(removeCarsGroup.Last()));
-            return removeCarsGroup.First().Bitmap;
+            string imageFilePath0 = GetFilePath(removeCarsGroup.Last());
+            IList<string> files = Directory.GetFiles(GetDirectory(removeCarsGroup.Last()));
+            string imageFilePath1 = files.ElementAt(files.IndexOf(imageFilePath0) + 1);
+
+            Image image1 = dataContext.Images.Where(i => i.Name == Path.GetFileNameWithoutExtension(imageFilePath1)).FirstOrDefault();
+            removeCarsGroup.Add(image1);
+
+            // TODO: Maske aktualisieren
+
+            return openCVHelper.CalculateAbsoluteDifference(imageFilePath0, imageFilePath1);
         }
 
         private string GetFilePath(Image image)

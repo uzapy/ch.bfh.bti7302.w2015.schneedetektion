@@ -7,12 +7,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Schneedetektion.ImagePlayGround
 {
     public partial class MainWindow : Window
     {
+        #region Fields
         public static string folderName = Settings.Default.WorkingFolder;
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
 
@@ -21,11 +23,12 @@ namespace Schneedetektion.ImagePlayGround
         private List<string> selectedMasks = new List<string>();
         private ObservableCollection<Data.Image> images = new ObservableCollection<Data.Image>();
         private Data.Image selectedImage;
+        private ObservableCollection<Data.Image> removeCarsGroup = new ObservableCollection<Data.Image>();
 
         private DispatcherTimer timer = new DispatcherTimer();
 
-        private PolygonHandler polygonHandler;
-        private ImageMask imageMask = new ImageMask();
+        private PolygonHelper polygonHelper;
+        private ImageHelper imageHelper = new ImageHelper();
 
         private int year = 2014;
         private int month = 12;
@@ -33,15 +36,17 @@ namespace Schneedetektion.ImagePlayGround
         private bool hasDate = false;
         private int hour = 0;
         private int minute = 0;
-        private bool hasTime = false;
+        private bool hasTime = false; 
+        #endregion
 
+        #region Constructor
         public MainWindow()
         {
             InitializeComponent();
             listBox1.ItemsSource = cameraNames;
             imageContainer.ItemsSource = images;
+            removeCarsContainer.ItemsSource = removeCarsGroup;
 
-            #region Initial Load
             foreach (Camera camera in dataContext.Cameras)
             {
                 cameraNames.Add(camera.Name);
@@ -54,19 +59,21 @@ namespace Schneedetektion.ImagePlayGround
 
             timeLapesImage.Source = images.First().Bitmap;
             slider1.Maximum = images.Count - 1;
-            #endregion
 
             timer.Tick += Timer_Tick;
             timer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100 Milisekunden => 10fps
 
-            polygonHandler = new PolygonHandler(polygonCanvas);
-            selectedArea.ItemsSource = polygonHandler.ImageAreas;
+            polygonHelper = new PolygonHelper(polygonCanvas);
+            selectedArea.ItemsSource = polygonHelper.ImageAreas;
             selectedArea.SelectedItem = selectedArea.Items[0];
 
-            listBox2.ItemsSource = polygonHandler.ImageAreas;
+            listBox2.ItemsSource = polygonHelper.ImageAreas;
         }
+        #endregion
 
-        public bool HasSelectedMasks { get { return selectedMasks.Count > 0; } }
+        #region Properties
+        public bool HasSelectedMasks { get { return selectedMasks.Count > 0; } } 
+        #endregion
 
         #region Event Handler
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
@@ -115,12 +122,28 @@ namespace Schneedetektion.ImagePlayGround
         {
             selectedMasks.Clear();
             selectedMasks.AddRange(listBox2.SelectedItems.OfType<string>().ToList());
-            imageMask.ActiveMasks = selectedMasks;
+            imageHelper.ActiveMasks = selectedMasks;
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
             ReloadImages();
+        }
+
+        private void imageContainer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (imageContainer.SelectedIndex >= 0)
+            {
+                if (selectedImage?.Place != images[imageContainer.SelectedIndex].Place)
+                {
+                    selectedImage = images[imageContainer.SelectedIndex];
+                    polygonHelper.loadSavedPolygons(selectedImage);
+                    selectedCameraName.Text = "Camera: " + selectedImage.Place;
+
+                    removeCarsGroup.Clear();
+                    removeCarsGroup.Add(selectedImage);
+                }
+            }
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -160,37 +183,24 @@ namespace Schneedetektion.ImagePlayGround
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private void imageContainer_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (imageContainer.SelectedIndex >= 0)
-            {
-                if (selectedImage?.Place != images[imageContainer.SelectedIndex].Place)
-                {
-                    selectedImage = images[imageContainer.SelectedIndex];
-                    polygonHandler.loadSavedPolygons(selectedImage);
-                    selectedCameraName.Text = "Camera: " + selectedImage.Place;
-                }
-            }
-        }
-
         private void SelectedArea_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            polygonHandler.setSelectedArea(selectedArea.SelectedIndex);
+            polygonHelper.setSelectedArea(selectedArea.SelectedIndex);
         }
 
         private void newPolygon_Click(object sender, RoutedEventArgs e)
         {
-            polygonHandler.newPolygon(selectedImage, selectedArea.SelectedIndex);
+            polygonHelper.newPolygon(selectedImage, selectedArea.SelectedIndex);
         }
 
         private void savePolygon_Click(object sender, RoutedEventArgs e)
         {
-            polygonHandler.savePolygon(maskToolImage.ActualWidth, maskToolImage.ActualHeight);
+            polygonHelper.savePolygon(maskToolImage.ActualWidth, maskToolImage.ActualHeight);
         }
 
         private void deletePoint_Click(object sender, RoutedEventArgs e)
         {
-            polygonHandler.deleteLastPoint();
+            polygonHelper.deleteLastPoint();
         }
 
         private void maskToolImage_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -207,7 +217,13 @@ namespace Schneedetektion.ImagePlayGround
 
         private void polygonCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            polygonHandler.setPoint(e.GetPosition(maskToolImage));
+            polygonHelper.setPoint(e.GetPosition(maskToolImage));
+        }
+
+        private void step_Click(object sender, RoutedEventArgs e)
+        {
+            missingPieces.Source = imageHelper.ApplyNext(removeCarsGroup);
+            // TODO: Prozent anzeigen
         }
         #endregion
 
@@ -228,19 +244,9 @@ namespace Schneedetektion.ImagePlayGround
                                 where selectedCameras.Contains(i.Place) || selectedCameras.Contains("all")
                                 select i).Distinct().Take(512);
 
-            if (selectedMasks.Count < 1)
+            foreach (Data.Image i in loadedImages)
             {
-                foreach (Data.Image i in loadedImages)
-                {
-                    images.Add(i);
-                }
-            }
-            else
-            {
-                foreach (Data.Image i in loadedImages)
-                {
-                    images.Add(imageMask.ApplyMask(i));
-                }
+                images.Add(imageHelper.ApplyMask(i));
             }
 
             slider1.Maximum = images.Count - 1;

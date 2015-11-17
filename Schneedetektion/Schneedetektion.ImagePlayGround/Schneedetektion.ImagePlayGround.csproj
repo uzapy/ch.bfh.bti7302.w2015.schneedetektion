@@ -88,8 +88,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ImageMask.cs" />
-    <Compile Include="PolygonHandler.cs" />
+    <Compile Include="ImageHelper.cs" />
+    <Compile Include="PolygonHelper.cs" />
     <Compile Include="SizeConverter.cs" />
     <Compile Include="VisibilityConverter.cs" />
     <Page Include="MainWindow.xaml">

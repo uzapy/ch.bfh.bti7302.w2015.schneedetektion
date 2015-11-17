@@ -42,10 +42,6 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <!--<Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>-->
                                 <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=slider0, Path=Value}" />
                                 <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White"
                                            FontSize="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
@@ -78,6 +74,32 @@
                     <Grid x:Name="canvasGrid" DockPanel.Dock="Bottom" >
                         <Image x:Name="maskToolImage" Grid.Row="0" Source="{Binding ElementName=imageContainer, Path=SelectedItem.Bitmap}" HorizontalAlignment="Left" SizeChanged="maskToolImage_SizeChanged" />
                         <Canvas x:Name="polygonCanvas" Grid.Row="0" MouseMove="polygonCanvas_MouseMove" MouseLeftButtonDown="polygonCanvas_MouseLeftButtonDown" Background="Transparent" />
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Remove Cars">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <Button x:Name="step" Content="Next Image" Width="100" Click="step_Click" />
+                    </StackPanel>
+                    <Grid DockPanel.Dock="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*" />
+                            <ColumnDefinition Width="0.5*" />
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" x:Name="missingPieces" VerticalAlignment="Top" />
+                        <ListView Grid.Column="1" x:Name="removeCarsContainer">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Bitmap}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
                     </Grid>
                 </DockPanel>
             </TabItem>

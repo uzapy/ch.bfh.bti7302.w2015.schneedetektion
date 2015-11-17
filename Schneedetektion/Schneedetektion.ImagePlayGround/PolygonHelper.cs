@@ -9,7 +9,7 @@ using Shapes = System.Windows.Shapes;
 
 namespace Schneedetektion.ImagePlayGround
 {
-    internal class PolygonHandler
+    internal class PolygonHelper
     {
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private Shapes.Polygon polygon;
@@ -21,7 +21,7 @@ namespace Schneedetektion.ImagePlayGround
         private Brush[] fillBrushes = { Brushes.Blue, Brushes.Red, Brushes.Yellow, Brushes.Brown, Brushes.Violet, Brushes.Orange, Brushes.Magenta, Brushes.Gold };
         private Brush[] strokeBrushes = { Brushes.LightBlue, Brushes.OrangeRed, Brushes.Khaki, Brushes.Sienna, Brushes.Pink, Brushes.SandyBrown, Brushes.Orchid, Brushes.Wheat };
 
-        public PolygonHandler(Canvas polygonCanvas)
+        public PolygonHelper(Canvas polygonCanvas)
         {
             this.polygonCanvas = polygonCanvas;
         }

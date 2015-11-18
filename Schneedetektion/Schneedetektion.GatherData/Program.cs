@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 
 namespace Schneedetektion.GatherData
@@ -22,6 +23,7 @@ namespace Schneedetektion.GatherData
             // RegisterImagesInDB();
             // UpdateDateTime();
             // RemoveDataWithoutFile();
+            GetLiveImage();
         }
 
         private static void RegisterImagesInDB()
@@ -127,6 +129,13 @@ namespace Schneedetektion.GatherData
 
             dataContext.SubmitChanges();
             Console.WriteLine("Finished!");
+        }
+
+        private static void GetLiveImage()
+        {
+            WebClient webClient = new WebClient();
+            webClient.Headers["Cookie"] = "PHPSESSID=6dook56psrptp83461mh3mpip4";
+            webClient.DownloadFile("http://www.astramobcam.ch/kamera/mvk101/live.jpg", "C:\\Users\\uzapy\\Desktop\\astra\\liveImage.jpg");
         }
     }
 }

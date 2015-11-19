@@ -20,6 +20,7 @@ namespace Schneedetektion.ImagePlayGround
         private List<Polygon> savedPolygons = new List<Polygon>();
         public List<string> activeMasks = new List<string>();
 
+        #region Masking
         public List<string> ActiveMasks
         {
             get
@@ -55,8 +56,10 @@ namespace Schneedetektion.ImagePlayGround
 
             return image;
         }
+        #endregion
 
-        internal ImageSource ApplyNext(ObservableCollection<Image> removeCarsGroup, ImageSource currentMask)
+        #region Car clean up
+        internal ImageSource ApplyNext(ObservableCollection<Image> removeCarsGroup, List<BitmapImage> removeCarsMasks)
         {
             string imageFilePath0 = GetFilePath(removeCarsGroup.Last());
             IList<string> files = Directory.GetFiles(GetDirectory(removeCarsGroup.Last()));
@@ -64,12 +67,23 @@ namespace Schneedetektion.ImagePlayGround
 
             Image image1 = dataContext.Images.Where(i => i.Name == Path.GetFileNameWithoutExtension(imageFilePath1)).FirstOrDefault();
             removeCarsGroup.Add(image1);
+            
+            removeCarsMasks.Add(openCVHelper.CalculateAbsoluteDifference(imageFilePath0, imageFilePath1));
 
-            // TODO: Maske aktualisieren
+            BitmapImage intersectedMask = new BitmapImage();
 
-            return openCVHelper.CalculateAbsoluteDifference(imageFilePath0, imageFilePath1);
+            if (removeCarsMasks.Count > 1)
+            {
+                int lastMask = removeCarsMasks.Count - 1;
+                intersectedMask = openCVHelper.IntersectMasks(removeCarsMasks[lastMask], removeCarsMasks[lastMask - 1]);
+                removeCarsMasks.Add(intersectedMask);
+            }
+
+            return removeCarsMasks.Last();
         }
+        #endregion
 
+        #region Helper Methodes
         private string GetFilePath(Image image)
         {
             return folderName + "\\" + image.Place + "\\" + image.Name.Substring(7, 8) + "\\" + image.Name + ".jpg";
@@ -78,6 +92,7 @@ namespace Schneedetektion.ImagePlayGround
         private string GetDirectory(Image image)
         {
             return folderName + "\\" + image.Place + "\\" + image.Name.Substring(7, 8);
-        }
+        }  
+        #endregion
     }
 }

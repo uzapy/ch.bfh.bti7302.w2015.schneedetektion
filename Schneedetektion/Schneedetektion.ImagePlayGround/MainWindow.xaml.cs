@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Schneedetektion.ImagePlayGround
@@ -23,6 +24,7 @@ namespace Schneedetektion.ImagePlayGround
         private ObservableCollection<Data.Image> images = new ObservableCollection<Data.Image>();
         private Data.Image selectedImage;
         private ObservableCollection<Data.Image> removeCarsGroup = new ObservableCollection<Data.Image>();
+        private List<BitmapImage> removeCarsMasks = new List<BitmapImage>();
 
         private DispatcherTimer timer = new DispatcherTimer();
 
@@ -140,6 +142,7 @@ namespace Schneedetektion.ImagePlayGround
                     selectedCameraName.Text = "Camera: " + selectedImage.Place;
 
                     removeCarsGroup.Clear();
+                    removeCarsMasks.Clear();
                     removeCarsGroup.Add(selectedImage);
                 }
             }
@@ -221,7 +224,7 @@ namespace Schneedetektion.ImagePlayGround
 
         private void step_Click(object sender, RoutedEventArgs e)
         {
-            missingPieces.Source = imageHelper.ApplyNext(removeCarsGroup, missingPieces.Source);
+            missingPieces.Source = imageHelper.ApplyNext(removeCarsGroup, removeCarsMasks);
             // TODO: Prozent anzeigen
         }
         #endregion

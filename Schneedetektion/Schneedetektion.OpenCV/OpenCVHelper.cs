@@ -123,6 +123,20 @@ namespace Schneedetektion.OpenCV
             return resultImage;
         }
 
+        private Drawing.Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
+        {
+            Drawing.Bitmap bitmap;
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                encoder.Save(stream);
+                bitmap = new Drawing.Bitmap(stream);
+            }
+            return bitmap;
+        }
+
         public BitmapImage CalculateAbsoluteDifference(string imagePath0, string imagePath1)
         {
             Image<Bgr, byte> image0 = new Image<Bgr, byte>(imagePath0);
@@ -136,6 +150,16 @@ namespace Schneedetektion.OpenCV
             //CvInvoke.cvCopy(image1, result1, result1);
 
             return BitmapToBitmapImage(result1.Bitmap);
+        }
+
+        public BitmapImage IntersectMasks(BitmapImage bitmapImage1, BitmapImage bitmapImage2)
+        {
+
+            Image<Bgr, byte> result = new Image<Bgr, byte>(new byte[288, 352, 3]);
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
+            Image<Bgr, byte> image2 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+            CvInvoke.BitwiseOr(image1, image2, result);
+            return BitmapToBitmapImage(result.Bitmap);
         }
 
         public void CalculateAverageBrightessForArea(string reference0, string reference1, StrassenbilderMetaDataContext dataContext)

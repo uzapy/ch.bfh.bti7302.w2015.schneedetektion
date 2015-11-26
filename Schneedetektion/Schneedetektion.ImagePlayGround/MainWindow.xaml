@@ -87,8 +87,20 @@
                             <ColumnDefinition Width="0.5*" />
                             <ColumnDefinition Width="0.5*" />
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" x:Name="missingPieces" VerticalAlignment="Top" />
-                        <ListView Grid.Column="1" x:Name="removeCarsContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                        <!--<Image Grid.Column="0" x:Name="missingPieces" VerticalAlignment="Top" />-->
+                        <ListView Grid.Column="0" x:Name="resultsContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding}" Width="{Binding ElementName=slider0, Path=Value}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <ListView Grid.Column="1" x:Name="removeCarsContainer" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal" />

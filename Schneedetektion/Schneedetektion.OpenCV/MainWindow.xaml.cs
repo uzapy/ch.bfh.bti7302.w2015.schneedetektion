@@ -30,7 +30,7 @@ namespace Schneedetektion.OpenCV
 
             //ApplyMask();
 
-            CalculateAverage();
+            //CalculateAverage();
 
             //CalculateAverageBrightessForArea();
         }

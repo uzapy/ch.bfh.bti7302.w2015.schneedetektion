@@ -24,7 +24,7 @@ namespace Schneedetektion.ImagePlayGround
         private ObservableCollection<Data.Image> images = new ObservableCollection<Data.Image>();
         private Data.Image selectedImage;
         private ObservableCollection<Data.Image> removeCarsGroup = new ObservableCollection<Data.Image>();
-        private List<BitmapImage> removeCarsMasks = new List<BitmapImage>();
+        private ObservableCollection<BitmapImage> resultsGroup = new ObservableCollection<BitmapImage>();
 
         private DispatcherTimer timer = new DispatcherTimer();
 
@@ -46,6 +46,7 @@ namespace Schneedetektion.ImagePlayGround
             InitializeComponent();
             listBox1.ItemsSource = cameraNames;
             imageContainer.ItemsSource = images;
+            resultsContainer.ItemsSource = resultsGroup;
             removeCarsContainer.ItemsSource = removeCarsGroup;
 
             foreach (Camera camera in dataContext.Cameras)
@@ -140,11 +141,11 @@ namespace Schneedetektion.ImagePlayGround
                     selectedImage = images[imageContainer.SelectedIndex];
                     polygonHelper.loadSavedPolygons(selectedImage);
                     selectedCameraName.Text = "Camera: " + selectedImage.Place;
-
-                    removeCarsGroup.Clear();
-                    removeCarsMasks.Clear();
-                    removeCarsGroup.Add(selectedImage);
                 }
+
+                removeCarsGroup.Clear();
+                resultsGroup.Clear();
+                removeCarsGroup.Add(images[imageContainer.SelectedIndex]);
             }
         }
 
@@ -224,8 +225,13 @@ namespace Schneedetektion.ImagePlayGround
 
         private void step_Click(object sender, RoutedEventArgs e)
         {
-            missingPieces.Source = imageHelper.ApplyNext(removeCarsGroup, removeCarsMasks);
-            // TODO: Prozent anzeigen
+            removeCarsGroup.Add(GetNextImage(removeCarsGroup.Last()));
+            IEnumerable<BitmapImage> results = imageHelper.ApplyNext(removeCarsGroup);
+            foreach (BitmapImage result in results)
+            {
+                resultsGroup.Add(result);
+            }
+            removeCarsGroup.FirstOrDefault().Bitmap = resultsGroup.LastOrDefault();
         }
         #endregion
 
@@ -253,6 +259,15 @@ namespace Schneedetektion.ImagePlayGround
 
             slider1.Maximum = images.Count - 1;
             timeLapesImage.Source = images[(int)slider1.Value].Bitmap;
+        }
+
+        private Data.Image GetNextImage(Data.Image image)
+        {
+            return (from i in dataContext.Images
+                    where i.Place == image.Place
+                    where i.UnixTime > image.UnixTime
+                    orderby i.UnixTime ascending
+                    select i).FirstOrDefault();
         }
         #endregion
     }

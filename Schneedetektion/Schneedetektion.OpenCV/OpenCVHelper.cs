@@ -147,19 +147,55 @@ namespace Schneedetektion.OpenCV
             result1 = image0.AbsDiff(image1);
             result1._ThresholdBinaryInv(new Bgr(75, 75, 75), new Bgr(255, 255, 255));
 
-            //CvInvoke.cvCopy(image1, result1, result1);
+            return BitmapToBitmapImage(result1.Bitmap);
+        }
+
+        public BitmapImage CalculateIntesection(BitmapImage bitmapImage1, BitmapImage bitmapImage2)
+        {
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+
+            Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
+            CvInvoke.BitwiseOr(image0, image1, result1);
+
+            return BitmapToBitmapImage(result1.Bitmap);
+        }
+
+        public BitmapImage CalculateAverage(string imagePath0, string imagePath1)
+        {
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(imagePath0);
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(imagePath1);
+
+            Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
+            CvInvoke.AddWeighted(image0, 0.5, image1, 0.5, 0.0, result1);
 
             return BitmapToBitmapImage(result1.Bitmap);
         }
 
         public BitmapImage IntersectMasks(BitmapImage bitmapImage1, BitmapImage bitmapImage2)
         {
-
-            Image<Bgr, byte> result = new Image<Bgr, byte>(new byte[288, 352, 3]);
             Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
             Image<Bgr, byte> image2 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+
+            Image<Bgr, byte> result = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
             CvInvoke.BitwiseOr(image1, image2, result);
+
             return BitmapToBitmapImage(result.Bitmap);
+        }
+
+        public BitmapImage CopyEmptyAreasToBase(BitmapImage bitmapImage1, BitmapImage bitmapImage2, BitmapImage bitmapImageMask)
+        {
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
+            Image<Bgr, byte> image2 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+            Image<Bgr, byte> mask = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImageMask));
+            mask._Not();
+
+            CvInvoke.cvCopy(image2, image1, mask);
+
+            return BitmapToBitmapImage(image1.Bitmap);
         }
 
         public void CalculateAverageBrightessForArea(string reference0, string reference1, StrassenbilderMetaDataContext dataContext)

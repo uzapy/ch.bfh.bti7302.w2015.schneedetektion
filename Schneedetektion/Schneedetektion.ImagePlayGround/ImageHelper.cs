@@ -81,6 +81,36 @@ namespace Schneedetektion.ImagePlayGround
 
             return removeCarsMasks.Last();
         }
+
+        internal IEnumerable<BitmapImage> ApplyNext(ObservableCollection<Image> removeCarsGroup)
+        {
+            List<BitmapImage> results = new List<BitmapImage>();
+
+            if (removeCarsGroup.Count() > 2)
+            {
+                // select base image
+                string baseImageFilePath = GetFilePath(removeCarsGroup.FirstOrDefault());
+                // select second to last image
+                string secondToLastImageFilePath = GetFilePath(removeCarsGroup.ElementAt(removeCarsGroup.Count - 2));
+                // select lat image
+                string lastImageFilePath = GetFilePath(removeCarsGroup.ElementAt(removeCarsGroup.Count - 1));
+
+                // absolute difference between base and second to last
+                results.Add(openCVHelper.CalculateAbsoluteDifference(baseImageFilePath, secondToLastImageFilePath));
+                // absolute difference between base and last
+                results.Add(openCVHelper.CalculateAbsoluteDifference(baseImageFilePath, lastImageFilePath));
+
+                // intersection between the two differences
+                results.Add(openCVHelper.CalculateIntesection(results.ElementAt(results.Count -2), results.ElementAt(results.Count-1)));
+                // blend last and second to last images
+                results.Add(openCVHelper.CalculateAverage(secondToLastImageFilePath, lastImageFilePath));
+
+                // replace empty areas on base image
+                results.Add(openCVHelper.CopyEmptyAreasToBase(removeCarsGroup.FirstOrDefault().Bitmap, results.ElementAt(results.Count - 1), results.ElementAt(results.Count - 2)));
+            }
+
+            return results;
+        }
         #endregion
 
         #region Helper Methodes
@@ -92,7 +122,7 @@ namespace Schneedetektion.ImagePlayGround
         private string GetDirectory(Image image)
         {
             return folderName + "\\" + image.Place + "\\" + image.Name.Substring(7, 8);
-        }  
+        }
         #endregion
     }
 }

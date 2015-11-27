@@ -81,6 +81,7 @@
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                         <Button x:Name="step" Content="Next Image" Width="100" Click="step_Click" />
+                        <TextBlock x:Name="blackPercentage" Width="100" TextAlignment="Center" />
                     </StackPanel>
                     <Grid DockPanel.Dock="Bottom">
                         <Grid.ColumnDefinitions>

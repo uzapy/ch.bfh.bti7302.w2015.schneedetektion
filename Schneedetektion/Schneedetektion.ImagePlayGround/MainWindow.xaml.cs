@@ -37,7 +37,7 @@ namespace Schneedetektion.ImagePlayGround
         private bool hasDate = false;
         private int hour = 0;
         private int minute = 0;
-        private bool hasTime = false; 
+        private bool hasTime = false;
         #endregion
 
         #region Constructor
@@ -74,7 +74,7 @@ namespace Schneedetektion.ImagePlayGround
         #endregion
 
         #region Properties
-        public bool HasSelectedMasks { get { return selectedMasks.Count > 0; } } 
+        public bool HasSelectedMasks { get { return selectedMasks.Count > 0; } }
         #endregion
 
         #region Event Handler
@@ -232,6 +232,7 @@ namespace Schneedetektion.ImagePlayGround
                 resultsGroup.Add(result);
             }
             removeCarsGroup.FirstOrDefault().Bitmap = resultsGroup.LastOrDefault();
+            blackPercentage.Text = "Mask: " + (imageHelper.BlackPercentage > 0 ? imageHelper.BlackPercentage.ToString("0.00") : "???") + "%";
         }
         #endregion
 

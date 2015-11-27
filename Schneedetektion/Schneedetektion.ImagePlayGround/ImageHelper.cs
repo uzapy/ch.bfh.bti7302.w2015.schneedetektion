@@ -34,6 +34,8 @@ namespace Schneedetektion.ImagePlayGround
             }
         }
 
+        public double BlackPercentage { get { return openCVHelper.BlackPercentage; } }
+
         internal Image ApplyMask(Image image)
         {
             string imageFilePath = GetFilePath(image);
@@ -67,7 +69,7 @@ namespace Schneedetektion.ImagePlayGround
 
             Image image1 = dataContext.Images.Where(i => i.Name == Path.GetFileNameWithoutExtension(imageFilePath1)).FirstOrDefault();
             removeCarsGroup.Add(image1);
-            
+
             removeCarsMasks.Add(openCVHelper.CalculateAbsoluteDifference(imageFilePath0, imageFilePath1));
 
             BitmapImage intersectedMask = new BitmapImage();
@@ -86,22 +88,25 @@ namespace Schneedetektion.ImagePlayGround
         {
             List<BitmapImage> results = new List<BitmapImage>();
 
-            if (removeCarsGroup.Count() > 2)
+            if (removeCarsGroup.Count() > 2 && (removeCarsGroup.Count() + 1) % 2 == 0)
             {
                 // select base image
                 string baseImageFilePath = GetFilePath(removeCarsGroup.FirstOrDefault());
+                BitmapImage baseImage = removeCarsGroup.FirstOrDefault().Bitmap;
                 // select second to last image
                 string secondToLastImageFilePath = GetFilePath(removeCarsGroup.ElementAt(removeCarsGroup.Count - 2));
+                BitmapImage secondToLastImage = removeCarsGroup.ElementAt(removeCarsGroup.Count - 2).Bitmap;
                 // select lat image
                 string lastImageFilePath = GetFilePath(removeCarsGroup.ElementAt(removeCarsGroup.Count - 1));
+                BitmapImage lastImage = removeCarsGroup.ElementAt(removeCarsGroup.Count - 1).Bitmap;
 
                 // absolute difference between base and second to last
-                results.Add(openCVHelper.CalculateAbsoluteDifference(baseImageFilePath, secondToLastImageFilePath));
+                results.Add(openCVHelper.CalculateAbsoluteDifference(baseImage, secondToLastImage));
                 // absolute difference between base and last
-                results.Add(openCVHelper.CalculateAbsoluteDifference(baseImageFilePath, lastImageFilePath));
+                results.Add(openCVHelper.CalculateAbsoluteDifference(baseImage, lastImage));
 
                 // intersection between the two differences
-                results.Add(openCVHelper.CalculateIntesection(results.ElementAt(results.Count -2), results.ElementAt(results.Count-1)));
+                results.Add(openCVHelper.CalculateIntesection(results.ElementAt(results.Count - 2), results.ElementAt(results.Count - 1)));
                 // blend last and second to last images
                 results.Add(openCVHelper.CalculateAverage(secondToLastImageFilePath, lastImageFilePath));
 

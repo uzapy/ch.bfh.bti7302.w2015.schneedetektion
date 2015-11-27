@@ -19,6 +19,7 @@ namespace Schneedetektion.OpenCV
     public class OpenCVHelper
     {
         private List<Drawing.Point> polygonPoints;
+        public double BlackPercentage;
 
         public BitmapImage GetMaskedImage(string imagePath, IList<Point> pointCollection)
         {
@@ -146,6 +147,40 @@ namespace Schneedetektion.OpenCV
 
             result1 = image0.AbsDiff(image1);
             result1._ThresholdBinaryInv(new Bgr(75, 75, 75), new Bgr(255, 255, 255));
+            CvInvoke.CvtColor(result1, result1, ColorConversion.Bgr2Gray);
+
+            return BitmapToBitmapImage(result1.Bitmap);
+        }
+
+        public BitmapImage CalculateAbsoluteDifference(BitmapImage bitmapImage1, BitmapImage bitmapImage2)
+        {
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+
+            Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
+            result1 = image0.AbsDiff(image1);
+            result1._ThresholdBinaryInv(new Bgr(60, 60, 60), new Bgr(255, 255, 255));
+            CvInvoke.CvtColor(result1, result1, ColorConversion.Bgr2Gray);
+
+            for (int i = 0; i < result1.Cols; i++)
+            {
+                for (int j = 0; j < result1.Rows; j++)
+                {
+                    if (result1.Data[j, i, 0] < 50 && result1.Data[j, i, 1] < 50 && result1.Data[j, i, 2] < 50)
+                    {
+                        result1.Data[j, i, 0] = 0;
+                        result1.Data[j, i, 1] = 0;
+                        result1.Data[j, i, 2] = 0;
+                    }
+                    else
+                    {
+                        result1.Data[j, i, 0] = 255;
+                        result1.Data[j, i, 1] = 255;
+                        result1.Data[j, i, 2] = 255;
+                    }
+                }
+            }
 
             return BitmapToBitmapImage(result1.Bitmap);
         }
@@ -158,6 +193,8 @@ namespace Schneedetektion.OpenCV
             Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
             CvInvoke.BitwiseOr(image0, image1, result1);
+
+            BlackPercentage = CountBlackArea(result1);
 
             return BitmapToBitmapImage(result1.Bitmap);
         }
@@ -184,6 +221,20 @@ namespace Schneedetektion.OpenCV
             CvInvoke.BitwiseOr(image1, image2, result);
 
             return BitmapToBitmapImage(result.Bitmap);
+        }
+
+        private double CountBlackArea(Image<Bgr, byte> image)
+        {
+            int total = image.Cols * image.Rows;
+            int black = 0;
+            for (int i = 0; i < image.Cols; i++)
+            {
+                for (int j = 0; j < image.Rows; j++)
+                {
+                    if (image.Data[j, i, 0] > 250) black++;
+                }
+            }
+            return 100d / (double)total * (double)black;
         }
 
         public BitmapImage CopyEmptyAreasToBase(BitmapImage bitmapImage1, BitmapImage bitmapImage2, BitmapImage bitmapImageMask)

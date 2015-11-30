@@ -1,7 +1,6 @@
 ﻿<Window x:Class="Schneedetektion.ImagePlayGround.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Schneedetektion.ImagePlayGround"
         xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Schneedetektion Playground" Height="800" Width="1000" WindowState="Maximized"
@@ -115,6 +114,9 @@
                         </ListView>
                     </Grid>
                 </DockPanel>
+            </TabItem>
+            <TabItem Header="Get optimal picture">
+                <local:OptimalPicture />
             </TabItem>
         </TabControl>
         <Button x:Name="button" Content="Apply Filter" HorizontalAlignment="Left" Margin="10,660,0,0" VerticalAlignment="Top" Width="122" Height="25" Click="button_Click" />

@@ -34,5 +34,17 @@ namespace Schneedetektion.ImagePlayGround.Properties {
                 this["WorkingFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\uzapy\\Desktop\\astra\\burst")]
+        public string BurstFolder {
+            get {
+                return ((string)(this["BurstFolder"]));
+            }
+            set {
+                this["BurstFolder"] = value;
+            }
+        }
     }
 }

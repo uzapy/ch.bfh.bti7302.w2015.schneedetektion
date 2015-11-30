@@ -89,6 +89,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ImageHelper.cs" />
+    <Compile Include="OptimalPicture.xaml.cs">
+      <DependentUpon>OptimalPicture.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PolygonHelper.cs" />
     <Compile Include="SizeConverter.cs" />
     <Compile Include="VisibilityConverter.cs" />
@@ -104,6 +107,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OptimalPicture.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

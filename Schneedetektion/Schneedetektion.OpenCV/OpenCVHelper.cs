@@ -152,10 +152,10 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(result1.Bitmap);
         }
 
-        public BitmapImage CalculateAbsoluteDifference(BitmapImage bitmapImage1, BitmapImage bitmapImage2)
+        public BitmapImage CalculateAbsoluteDifference(BitmapImage bitmapImage0, BitmapImage bitmapImage1)
         {
-            Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
-            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage0));
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
 
             Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
@@ -185,10 +185,10 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(result1.Bitmap);
         }
 
-        public BitmapImage CalculateIntesection(BitmapImage bitmapImage1, BitmapImage bitmapImage2)
+        public BitmapImage CalculateIntesection(BitmapImage bitmapImage0, BitmapImage bitmapImage1)
         {
-            Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
-            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage0));
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
 
             Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
@@ -211,10 +211,10 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(result1.Bitmap);
         }
 
-        public BitmapImage IntersectMasks(BitmapImage bitmapImage1, BitmapImage bitmapImage2)
+        public BitmapImage IntersectMasks(BitmapImage bitmapImage0, BitmapImage bitmapImage1)
         {
-            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
-            Image<Bgr, byte> image2 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage0));
+            Image<Bgr, byte> image2 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
 
             Image<Bgr, byte> result = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
@@ -237,10 +237,10 @@ namespace Schneedetektion.OpenCV
             return 100d / (double)total * (double)black;
         }
 
-        public BitmapImage CopyEmptyAreasToBase(BitmapImage bitmapImage1, BitmapImage bitmapImage2, BitmapImage bitmapImageMask)
+        public BitmapImage CopyEmptyAreasToBase(BitmapImage bitmapImage0, BitmapImage bitmapImage1, BitmapImage bitmapImageMask)
         {
-            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
-            Image<Bgr, byte> image2 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage2));
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage0));
+            Image<Bgr, byte> image2 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage1));
             Image<Bgr, byte> mask = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImageMask));
             mask._Not();
 

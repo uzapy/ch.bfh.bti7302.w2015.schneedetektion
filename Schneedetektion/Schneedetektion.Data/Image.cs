@@ -13,7 +13,7 @@ namespace Schneedetektion.Data
         private BitmapImage bitmap;
         private string imageFileName;
 
-        public Image(string imageFileName)
+        public Image(string imageFileName, string burstFolder = null)
         {
             this.imageFileName = imageFileName;
             Name = Path.GetFileNameWithoutExtension(imageFileName);
@@ -25,6 +25,22 @@ namespace Schneedetektion.Data
             int minutes = Int32.Parse(Name.Substring(18, 2));
             int seconds = Int32.Parse(Name.Substring(20, 2));
             DateTime = new DateTime(year, month, day, hour, minutes, seconds);
+
+            if (!String.IsNullOrEmpty(burstFolder))
+            {
+                folderName = burstFolder;
+            }
+        }
+
+        public Image(BitmapImage bitmap, string name, string burstFolder = null)
+        {
+            Bitmap = bitmap;
+            Name = name;
+
+            if (!String.IsNullOrEmpty(burstFolder))
+            {
+                folderName = burstFolder;
+            }
         }
 
         public BitmapImage Bitmap
@@ -35,7 +51,14 @@ namespace Schneedetektion.Data
                 {
                     try
                     {
-                        bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name.Substring(7, 8) + "\\" + Name + ".jpg"));
+                        if (Directory.Exists(folderName + "\\" + Place + "\\" + Name.Substring(7, 8)))
+                        {
+                            bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name.Substring(7, 8) + "\\" + Name + ".jpg"));
+                        }
+                        else
+                        {
+                            bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name + ".jpg"));
+                        }
                     }
                     catch (Exception)
                     {

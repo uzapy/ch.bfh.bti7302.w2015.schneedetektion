@@ -16,6 +16,7 @@ namespace Schneedetektion.ImagePlayGround
     {
         OpenCVHelper openCVHelper = new OpenCVHelper();
         private static string folderName = Settings.Default.WorkingFolder;
+        private static string burstFolderName = Settings.Default.BurstFolder;
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private List<Polygon> savedPolygons = new List<Polygon>();
         public List<string> activeMasks = new List<string>();
@@ -115,6 +116,28 @@ namespace Schneedetektion.ImagePlayGround
             }
 
             return results;
+        }
+
+        internal IEnumerable<Image> GetAllDifferences(IEnumerable<Image> selectedImages)
+        {
+            List<Image> differences = new List<Image>();
+
+            List<Tuple<Image, Image>> crossJoin = new List<Tuple<Image, Image>>();
+            for (int i = 0; i < selectedImages.Count() - 1; i++)
+            {
+                for (int j = i + 1; j < selectedImages.Count() - 1; j++)
+                {
+                    crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(j)));
+                }
+            }
+
+            foreach (var pair in crossJoin)
+            {
+                Image differenceImage = new Image(openCVHelper.CalculateAbsoluteDifference(pair.Item1.Bitmap, pair.Item2.Bitmap), pair.Item1.Name + "\r\n" + pair.Item2.Name);
+                differences.Add(differenceImage);
+            }
+
+            return differences;
         }
         #endregion
 

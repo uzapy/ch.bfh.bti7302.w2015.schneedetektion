@@ -32,15 +32,9 @@ namespace Schneedetektion.Data
             }
         }
 
-        public Image(BitmapImage bitmap, string name, string burstFolder = null)
+        public Image(BitmapImage bitmap)
         {
             Bitmap = bitmap;
-            Name = name;
-
-            if (!String.IsNullOrEmpty(burstFolder))
-            {
-                folderName = burstFolder;
-            }
         }
 
         public BitmapImage Bitmap
@@ -89,5 +83,9 @@ namespace Schneedetektion.Data
                 }
             }
         }
+
+        public double Coverage { get; set; }
+
+        public string CoverageText { get { return Coverage.ToString("0.00") + "%"; } }
     }
 }

@@ -25,7 +25,7 @@
             <ListBox x:Name="listBox1" HorizontalAlignment="Left" Height="224" Width="110" TabIndex="4" SelectionMode="Multiple" SelectionChanged="listBox1_SelectionChanged" />
         </GroupBox>
         <GroupBox x:Name="groupBox3" Header="Size" HorizontalAlignment="Left" Margin="10,362,0,0" VerticalAlignment="Top">
-            <Slider x:Name="slider0" HorizontalAlignment="Left" Width="110" VerticalAlignment="Top" TabIndex="5" Maximum="400" Minimum="50" LargeChange="1" Value="50"/>
+            <Slider x:Name="slider0" HorizontalAlignment="Left" Width="110" VerticalAlignment="Top" TabIndex="5" Maximum="800" Minimum="50" LargeChange="1" Value="50"/>
         </GroupBox>
         <GroupBox x:Name="groupBox4" Header="Apply Masks" HorizontalAlignment="Left" Margin="10,408,0,0" VerticalAlignment="Top">
             <ListBox x:Name="listBox2" HorizontalAlignment="Left" Height="224" Width="110" TabIndex="6" SelectionMode="Multiple" SelectionChanged="listBox2_SelectionChanged" />

@@ -223,6 +223,12 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(result.Bitmap);
         }
 
+        public double CountBlackArea(BitmapImage bitmapImage)
+        {
+            Image<Bgr, byte> image = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage));
+            return CountBlackArea(image);
+        }
+
         private double CountBlackArea(Image<Bgr, byte> image)
         {
             int total = image.Cols * image.Rows;
@@ -231,7 +237,7 @@ namespace Schneedetektion.OpenCV
             {
                 for (int j = 0; j < image.Rows; j++)
                 {
-                    if (image.Data[j, i, 0] > 250) black++;
+                    if (image.Data[j, i, 0] < 250) black++;
                 }
             }
             return 100d / (double)total * (double)black;

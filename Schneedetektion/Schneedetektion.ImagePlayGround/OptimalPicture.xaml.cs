@@ -47,7 +47,8 @@ namespace Schneedetektion.ImagePlayGround
             if (Cameras.SelectedItem != null)
             {
                 selectedFolder = burstFolder + "\\" + Cameras.SelectedItem;
-                
+
+                images.Clear();
                 foreach (string imageFileName in Directory.GetFiles(selectedFolder))
                 {
                     images.Add(new Data.Image(imageFileName, burstFolder));
@@ -82,7 +83,7 @@ namespace Schneedetektion.ImagePlayGround
         {
             IEnumerable<Data.Image> allDifferences = imageHelper.GetAllDifferences(selectedImages);
             selectedImages.Clear();
-            foreach (var difference in allDifferences)
+            foreach (var difference in allDifferences.OrderBy(d => d.Coverage))
             {
                 selectedImages.Add(difference);
             }

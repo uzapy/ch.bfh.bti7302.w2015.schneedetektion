@@ -123,17 +123,24 @@ namespace Schneedetektion.ImagePlayGround
             List<Image> differences = new List<Image>();
 
             List<Tuple<Image, Image>> crossJoin = new List<Tuple<Image, Image>>();
-            for (int i = 0; i < selectedImages.Count() - 1; i++)
+            for (int i = 0; i < selectedImages.Count()-1; i++)
             {
-                for (int j = i + 1; j < selectedImages.Count() - 1; j++)
-                {
-                    crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(j)));
-                }
+                crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 1)));
+            }
+            for (int i = 0; i < selectedImages.Count() - 2; i++)
+            {
+                crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 2)));
+            }
+            for (int i = 0; i < selectedImages.Count() - 3; i++)
+            {
+                crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 3)));
             }
 
             foreach (var pair in crossJoin)
             {
-                Image differenceImage = new Image(openCVHelper.CalculateAbsoluteDifference(pair.Item1.Bitmap, pair.Item2.Bitmap), pair.Item1.Name + "\r\n" + pair.Item2.Name);
+                Image differenceImage = new Image(openCVHelper.CalculateAbsoluteDifference(pair.Item1.Bitmap, pair.Item2.Bitmap));
+                differenceImage.Name = pair.Item1.Name + "\r\n" + pair.Item2.Name;
+                differenceImage.Coverage = openCVHelper.CountBlackArea(differenceImage.Bitmap);
                 differences.Add(differenceImage);
             }
 

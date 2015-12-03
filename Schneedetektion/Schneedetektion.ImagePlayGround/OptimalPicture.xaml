@@ -28,6 +28,8 @@
                         <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=optimalPicture, Path=ImageSize}" />
                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="Black"
                                    FontSize="{Binding ElementName=optimalPicture, Path=ImageSize, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
+                        <TextBlock Text="{Binding CoverageText}" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="Aquamarine"
+                                   FontSize="{Binding ElementName=optimalPicture, Path=ImageSize, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

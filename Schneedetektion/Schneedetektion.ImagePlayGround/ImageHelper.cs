@@ -20,6 +20,8 @@ namespace Schneedetektion.ImagePlayGround
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private List<Polygon> savedPolygons = new List<Polygon>();
         public List<string> activeMasks = new List<string>();
+        private List<Candidate> diffCandidates = new List<Candidate>();
+        private Image result = new Image();
 
         #region Masking
         public List<string> ActiveMasks
@@ -120,10 +122,9 @@ namespace Schneedetektion.ImagePlayGround
 
         internal IEnumerable<Image> GetAllDifferences(IEnumerable<Image> selectedImages)
         {
-            List<Image> differences = new List<Image>();
 
             List<Tuple<Image, Image>> crossJoin = new List<Tuple<Image, Image>>();
-            for (int i = 0; i < selectedImages.Count()-1; i++)
+            for (int i = 0; i < selectedImages.Count() - 1; i++)
             {
                 crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 1)));
             }
@@ -131,20 +132,38 @@ namespace Schneedetektion.ImagePlayGround
             {
                 crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 2)));
             }
-            for (int i = 0; i < selectedImages.Count() - 3; i++)
-            {
-                crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 3)));
-            }
+            //for (int i = 0; i < selectedImages.Count() - 3; i++)
+            //{
+            //    crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 3)));
+            //}
 
             foreach (var pair in crossJoin)
             {
                 Image differenceImage = new Image(openCVHelper.CalculateAbsoluteDifference(pair.Item1.Bitmap, pair.Item2.Bitmap));
                 differenceImage.Name = pair.Item1.Name + "\r\n" + pair.Item2.Name;
                 differenceImage.Coverage = openCVHelper.CountBlackArea(differenceImage.Bitmap);
-                differences.Add(differenceImage);
+                diffCandidates.Add(new Candidate(pair.Item1, pair.Item2, differenceImage));
             }
 
-            return differences;
+            // Beste 10% auswählen
+            int tenPercent = (int)Math.Ceiling(diffCandidates.Count * 0.1);
+            diffCandidates = diffCandidates.OrderBy(c => c.DifferenceImage.Coverage).Take(tenPercent).ToList();
+
+            // 1. Resultat schreiben
+            result.Bitmap = openCVHelper.GetMaskedImage(diffCandidates.First().DifferenceImage.Bitmap, diffCandidates.First().Image0.Bitmap);
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(result.Bitmap));
+            using (FileStream fileStream = new FileStream(@"C:\Users\uzapy\Desktop\astra\result\" + Guid.NewGuid() + ".png", FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }
+
+
+
+            //diffCandidates.RemoveAll(c => c.DifferenceImage.Coverage > 10);
+            //diffCandidates.Select(c => c.DifferenceImage.Coverage)
+
+            return diffCandidates.Select(dc => dc.DifferenceImage);
         }
         #endregion
 

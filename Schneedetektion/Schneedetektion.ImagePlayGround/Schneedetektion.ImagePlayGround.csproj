@@ -88,6 +88,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Candidate.cs" />
     <Compile Include="ImageHelper.cs" />
     <Compile Include="OptimalPicture.xaml.cs">
       <DependentUpon>OptimalPicture.xaml</DependentUpon>

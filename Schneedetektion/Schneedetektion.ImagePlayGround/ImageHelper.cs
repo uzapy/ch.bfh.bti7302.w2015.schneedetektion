@@ -22,6 +22,8 @@ namespace Schneedetektion.ImagePlayGround
         public List<string> activeMasks = new List<string>();
         private List<Candidate> diffCandidates = new List<Candidate>();
         private Image result = new Image();
+        private Image resultMask = new Image();
+        private static int counter = 0;
 
         #region Masking
         public List<string> ActiveMasks
@@ -122,21 +124,23 @@ namespace Schneedetektion.ImagePlayGround
 
         internal IEnumerable<Image> GetAllDifferences(IEnumerable<Image> selectedImages)
         {
+            List<Image> results = new List<Image>();
 
             List<Tuple<Image, Image>> crossJoin = new List<Tuple<Image, Image>>();
             for (int i = 0; i < selectedImages.Count() - 1; i++)
             {
                 crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 1)));
             }
-            for (int i = 0; i < selectedImages.Count() - 2; i++)
-            {
-                crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 2)));
-            }
+            //for (int i = 0; i < selectedImages.Count() - 2; i++)
+            //{
+            //    crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 2)));
+            //}
             //for (int i = 0; i < selectedImages.Count() - 3; i++)
             //{
             //    crossJoin.Add(new Tuple<Image, Image>(selectedImages.ElementAt(i), selectedImages.ElementAt(i + 3)));
             //}
 
+            diffCandidates.Clear();
             foreach (var pair in crossJoin)
             {
                 Image differenceImage = new Image(openCVHelper.CalculateAbsoluteDifference(pair.Item1.Bitmap, pair.Item2.Bitmap));
@@ -146,24 +150,35 @@ namespace Schneedetektion.ImagePlayGround
             }
 
             // Beste 10% auswählen
-            int tenPercent = (int)Math.Ceiling(diffCandidates.Count * 0.1);
+            int tenPercent = (int)Math.Ceiling(diffCandidates.Count * 0.5);
             diffCandidates = diffCandidates.OrderBy(c => c.DifferenceImage.Coverage).Take(tenPercent).ToList();
 
             // 1. Resultat schreiben
             result.Bitmap = openCVHelper.GetMaskedImage(diffCandidates.First().DifferenceImage.Bitmap, diffCandidates.First().Image0.Bitmap);
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(result.Bitmap));
-            using (FileStream fileStream = new FileStream(@"C:\Users\uzapy\Desktop\astra\result\" + Guid.NewGuid() + ".png", FileMode.Create))
+            resultMask.Bitmap = diffCandidates.First().DifferenceImage.Bitmap;
+            WriteResult(result.Bitmap);
+
+            Directory.GetFiles(@"C:\Users\uzapy\Desktop\astra\result\").ToList().ForEach(f => File.Delete(f));
+
+            // Löcher auffüllen mit der nächsten Maske
+            for (int i = 1; i < diffCandidates.Count; i++)
             {
-                encoder.Save(fileStream);
+                result.Bitmap = openCVHelper.FillMaskHoles(
+                    resultMask.Bitmap, diffCandidates[i].DifferenceImage.Bitmap, diffCandidates[i].Image0.Bitmap, result.Bitmap);
+                WriteResult(result.Bitmap);
+
+                resultMask.Bitmap = openCVHelper.GetBlackArea(result.Bitmap);
+                //WriteResult(resultMask.Bitmap);
+
+                if (openCVHelper.CountBlackArea(result.Bitmap) < 3) break;
             }
 
+            result.Name = "Result";
+            result.Coverage = openCVHelper.CountBlackArea(result.Bitmap);
+            results.Add(result);
+            results.AddRange(diffCandidates.Select(dc => dc.DifferenceImage));
 
-
-            //diffCandidates.RemoveAll(c => c.DifferenceImage.Coverage > 10);
-            //diffCandidates.Select(c => c.DifferenceImage.Coverage)
-
-            return diffCandidates.Select(dc => dc.DifferenceImage);
+            return results;
         }
         #endregion
 
@@ -176,6 +191,16 @@ namespace Schneedetektion.ImagePlayGround
         private string GetDirectory(Image image)
         {
             return folderName + "\\" + image.Place + "\\" + image.Name.Substring(7, 8);
+        }
+
+        private void WriteResult(BitmapImage bitmapImage)
+        {
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+            using (FileStream fileStream = new FileStream(@"C:\Users\uzapy\Desktop\astra\result\" + counter++ + ".png", FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }
         }
         #endregion
     }

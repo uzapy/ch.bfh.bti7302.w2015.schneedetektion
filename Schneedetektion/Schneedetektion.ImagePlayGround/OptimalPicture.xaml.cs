@@ -83,7 +83,7 @@ namespace Schneedetektion.ImagePlayGround
         {
             IEnumerable<Data.Image> allDifferences = imageHelper.GetAllDifferences(selectedImages);
             selectedImages.Clear();
-            foreach (var difference in allDifferences.OrderBy(d => d.Coverage))
+            foreach (var difference in allDifferences)
             {
                 selectedImages.Add(difference);
             }

@@ -153,12 +153,12 @@ namespace Schneedetektion.ImagePlayGround
             int tenPercent = (int)Math.Ceiling(diffCandidates.Count * 0.5);
             diffCandidates = diffCandidates.OrderBy(c => c.DifferenceImage.Coverage).Take(tenPercent).ToList();
 
+            Directory.GetFiles(@"C:\Users\uzapy\Desktop\astra\result\").ToList().ForEach(f => File.Delete(f));
+
             // 1. Resultat schreiben
             result.Bitmap = openCVHelper.GetMaskedImage(diffCandidates.First().DifferenceImage.Bitmap, diffCandidates.First().Image0.Bitmap);
             resultMask.Bitmap = diffCandidates.First().DifferenceImage.Bitmap;
             WriteResult(result.Bitmap);
-
-            Directory.GetFiles(@"C:\Users\uzapy\Desktop\astra\result\").ToList().ForEach(f => File.Delete(f));
 
             // Löcher auffüllen mit der nächsten Maske
             for (int i = 1; i < diffCandidates.Count; i++)
@@ -167,10 +167,10 @@ namespace Schneedetektion.ImagePlayGround
                     resultMask.Bitmap, diffCandidates[i].DifferenceImage.Bitmap, diffCandidates[i].Image0.Bitmap, result.Bitmap);
                 WriteResult(result.Bitmap);
 
-                resultMask.Bitmap = openCVHelper.GetBlackArea(result.Bitmap);
+                resultMask.Bitmap = openCVHelper.GetBlackArea(result.Bitmap, diffCandidates[i].DifferenceImage.Bitmap);
                 //WriteResult(resultMask.Bitmap);
 
-                if (openCVHelper.CountBlackArea(result.Bitmap) < 3) break;
+                if (openCVHelper.CountBlackArea(result.Bitmap) < 2) break;
             }
 
             result.Name = "Result";
@@ -179,6 +179,64 @@ namespace Schneedetektion.ImagePlayGround
             results.AddRange(diffCandidates.Select(dc => dc.DifferenceImage));
 
             return results;
+        }
+
+        internal IEnumerable<Image> GetAllDifferences2(IEnumerable<Image> selectedImages)
+        {
+            Directory.GetFiles(@"C:\Users\uzapy\Desktop\astra\result\").ToList().ForEach(f => File.Delete(f));
+            diffCandidates.Clear();
+
+            Image image0 = selectedImages.ElementAt(0);
+            Image image1 = selectedImages.ElementAt(1);
+            Image differenceImage = new Image(openCVHelper.CalculateAbsoluteDifference(image0.Bitmap, image1.Bitmap));
+            differenceImage.Name = image0.Name + "\r\n" + image1.Name;
+            differenceImage.Coverage = openCVHelper.CountBlackArea(differenceImage.Bitmap);
+            diffCandidates.Add(new Candidate(image0, image1, differenceImage));
+
+            result.Bitmap = openCVHelper.GetMaskedImage(differenceImage.Bitmap, image0.Bitmap);
+            resultMask.Bitmap = diffCandidates.First().DifferenceImage.Bitmap;
+            WriteResult(result.Bitmap);
+            WriteResult(resultMask.Bitmap);
+
+            for (int i = 1; i < selectedImages.Count() - 1; i++)
+            {
+                // Nächstes Bild auswählen
+                image0 = selectedImages.ElementAt(i);
+                // Nachbar des nächsten bilds auswählen
+                image1 = selectedImages.ElementAt(i+1);
+
+                // Differenz ausrechnen des Bildes und des Nachbarn
+                differenceImage = new Image(openCVHelper.CalculateAbsoluteDifference(image0.Bitmap, image1.Bitmap));
+                differenceImage.Name = image0.Name + "\r\n" + image1.Name;
+                differenceImage.Coverage = openCVHelper.CountBlackArea(differenceImage.Bitmap);
+                // Neuen Kandidaten hinzufügen
+                diffCandidates.Add(new Candidate(image0, image1, differenceImage));
+
+                // Resultat schreiben
+                //result.Bitmap = openCVHelper.GetMaskedImage(diffCandidates.First().DifferenceImage.Bitmap, diffCandidates.First().Image0.Bitmap);
+                //WriteResult(result.Bitmap);
+                //resultMask.Bitmap = diffCandidates.First().DifferenceImage.Bitmap;
+                //WriteResult(resultMask.Bitmap);
+                
+                result = new Image(openCVHelper.FillMaskHoles(
+                    resultMask.Bitmap, diffCandidates[i].DifferenceImage.Bitmap, diffCandidates[i].Image0.Bitmap, result.Bitmap));
+                result.Coverage = openCVHelper.CountBlackArea(result.Bitmap);
+                WriteResult(result.Bitmap);
+
+                resultMask.Bitmap = openCVHelper.GetBlackArea(result.Bitmap, diffCandidates[i].DifferenceImage.Bitmap);
+                resultMask.Coverage = openCVHelper.CountBlackArea(resultMask.Bitmap);
+                WriteResult(resultMask.Bitmap);
+                
+                if (resultMask.Coverage < 0.4)
+                {
+                    if(i > 2)
+                    {
+                        break;
+                    }
+                }
+
+                yield return result;
+            }
         }
         #endregion
 

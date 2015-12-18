@@ -74,16 +74,19 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(incomplete.Bitmap);
         }
 
-        public BitmapImage GetBlackArea(BitmapImage bitmap)
+        public BitmapImage GetBlackArea(BitmapImage bitmap0, BitmapImage bitmap1)
         {
-            Image<Bgr, byte> image = new Image<Bgr, byte>(BitmapImageToBitmap(bitmap));
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmap0));
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmap1));
+
             Image<Bgr, byte> resultMask = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
-            for (int i = 0; i < image.Cols; i++)
+            for (int i = 0; i < image0.Cols; i++)
             {
-                for (int j = 0; j < image.Rows; j++)
+                for (int j = 0; j < image0.Rows; j++)
                 {
-                    if (image.Data[j, i, 0] == 0 && image.Data[j, i, 1] == 0 && image.Data[j, i, 2] == 0)
+                    if (image0.Data[j, i, 0] == 0 && image0.Data[j, i, 1] == 0 && image0.Data[j, i, 2] == 0 && 
+                        !(image1.Data[j, i, 0] == 255 && image1.Data[j, i, 1] == 255 && image1.Data[j, i, 2] == 255))
                     {
                         resultMask.Data[j, i, 0] = 0;
                         resultMask.Data[j, i, 1] = 0;
@@ -236,7 +239,7 @@ namespace Schneedetektion.OpenCV
             result1._ThresholdBinaryInv(new Bgr(50, 50, 50), new Bgr(255, 255, 255));
             // CvInvoke.CvtColor(result1, result1, ColorConversion.Bgr2Gray);
 
-            //result1._Dilate(2); // Macht die schwarze Fläche kleiner
+            //result1._Dilate(1); // Macht die schwarze Fläche kleiner
             result1._Erode(3); // Macht die schwarze Fläche grösser
 
             for (int i = 0; i < result1.Cols; i++)

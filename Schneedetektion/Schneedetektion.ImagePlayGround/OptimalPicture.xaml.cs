@@ -81,7 +81,12 @@ namespace Schneedetektion.ImagePlayGround
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<Data.Image> allDifferences = imageHelper.GetAllDifferences(selectedImages);
+            List<Data.Image> parameter = new List<Data.Image>();
+            foreach (Data.Image i in selectedImages)
+            {
+                parameter.Add(i);
+            }
+            IEnumerable<Data.Image> allDifferences = imageHelper.GetAllDifferences2(parameter);
             selectedImages.Clear();
             foreach (var difference in allDifferences)
             {

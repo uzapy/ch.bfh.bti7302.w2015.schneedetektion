@@ -18,7 +18,10 @@ namespace Schneedetektion.GatherData
 
         static void Main(string[] args)
         {
-            cameraNames = dataContext.Cameras.Select(c => c.Name).ToList();
+            //cameraNames = dataContext.Cameras.Select(c => c.Name).ToList();
+            cameraNames = new List<string>() { "mvk021", "mvk022", "mvk050", "mvk066", "mvk099", "mvk101", "mvk104", "mvk105", "mvk107", "mvk108", "mvk109",
+                "mvk110", "mvk112", "mvk115", "mvk116", "mvk117", "mvk118", "mvk120", "mvk121", "mvk122", "mvk123", "mvk124", "mvk125", "mvk126", "mvk127",
+                "mvk128", "mvk129", "mvk131", "mvk132", "mvk107", "mvk134", "mvk107", "mvk158" };
 
             // RegisterImagesInDB();
             // UpdateDateTime();
@@ -114,7 +117,7 @@ namespace Schneedetektion.GatherData
                 Console.WriteLine("Finished!");
             }
         }
-        
+
         private static void RemoveDataWithoutFile()
         {
             foreach (Image image in dataContext.Images.Where(i => i.UnixTime == null))
@@ -135,7 +138,24 @@ namespace Schneedetektion.GatherData
         {
             WebClient webClient = new WebClient();
             webClient.Headers["Cookie"] = "PHPSESSID=6dook56psrptp83461mh3mpip4";
-            webClient.DownloadFile("http://www.astramobcam.ch/kamera/mvk101/live.jpg", "C:\\Users\\uzapy\\Desktop\\astra\\liveImage.jpg");
+            for (int i = 0; i < 30; i++)
+            {
+                foreach (var cameraName in cameraNames)
+                {
+                    if (!Directory.Exists("C:\\Users\\bublic\\Desktop\\astra\\" + cameraName + "\\20160112"))
+                    {
+                        Directory.CreateDirectory("C:\\Users\\bublic\\Desktop\\astra\\" + cameraName + "\\20160112");
+                    }
+
+                    string imageFullPath = "C:\\Users\\bublic\\Desktop\\astra\\" + cameraName + "\\20160112\\"
+                        + cameraName + "_20160112_" + DateTime.Now.ToString("hhmmss") + ".jpg";
+
+
+                    webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + cameraName + "/live.jpg", imageFullPath);
+
+                    Console.WriteLine(imageFullPath);
+                }
+            }
         }
     }
 }

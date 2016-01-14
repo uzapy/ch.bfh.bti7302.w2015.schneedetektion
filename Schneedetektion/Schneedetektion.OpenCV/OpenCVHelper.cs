@@ -28,6 +28,13 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(bitmap);
         }
 
+        public void GetMaskedImage(string imagePath, IList<Point> pointCollection, string resultPath)
+        {
+            Drawing.Bitmap bitmap = GetMaskedBitmap(imagePath, pointCollection);
+
+            bitmap.Save(resultPath);
+        }
+
         public BitmapImage GetMaskedImage(BitmapImage bitmapMask, BitmapImage bitmapImage)
         {
             Image<Bgr, byte> image = new Image<Bgr, byte>(BitmapImageToBitmap(bitmapImage));

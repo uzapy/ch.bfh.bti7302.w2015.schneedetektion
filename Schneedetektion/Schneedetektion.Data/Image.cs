@@ -102,5 +102,7 @@ namespace Schneedetektion.Data
         }
 
         public string FilePath { get { return imageFileName; } }
+
+        public bool ShowResult { get; set; }
     }
 }

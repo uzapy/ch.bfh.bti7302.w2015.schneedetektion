@@ -1,4 +1,5 @@
-﻿using Schneedetektion.Data;
+﻿using Newtonsoft.Json;
+using Schneedetektion.Data;
 using Schneedetektion.ImagePlayGround.Properties;
 using Schneedetektion.OpenCV;
 using System;
@@ -24,19 +25,20 @@ namespace Schneedetektion.ImagePlayGround
 
         private StrassenbilderMetaDataContext dataContext = new StrassenbilderMetaDataContext();
         private ObservableCollection<string> cameras = new ObservableCollection<string>();
+        private List<Polygon> polygons = new List<Polygon>();
         private string selectedCamera = String.Empty;
 
         private WebClient webClient = new WebClient();
 
         private List<Data.Image> downloadedImages = new List<Data.Image>();
         private List<Data.Image> differenceImages = new List<Data.Image>();
+        private List<Data.Image> maskedImages = new List<Data.Image>();
         private ObservableCollection<Data.Image> shownImages = new ObservableCollection<Data.Image>();
         private Data.Image candidate;
         private Data.Image candidateMask;
 
         private DispatcherTimer timer = new DispatcherTimer();
-
-        OpenCVHelper openCVHelper = new OpenCVHelper();
+        private OpenCVHelper openCVHelper = new OpenCVHelper();
         #endregion
 
         public LivePicture()
@@ -88,6 +90,7 @@ namespace Schneedetektion.ImagePlayGround
                 {
                     GetLivePicture();
                 }
+                polygons = dataContext.Polygons.Where(p => p.CameraName == selectedCamera).ToList();
                 timer.Start();
             }
         }
@@ -106,7 +109,12 @@ namespace Schneedetektion.ImagePlayGround
         {
             // Bilder entfernen
             downloadedImages.Clear();
+            differenceImages.Clear();
             shownImages.Clear();
+            candidate = null;
+            candidateMask = null;
+            polygons.Clear();
+            maskedImages.Clear();
 
             // Counter zurücksetzen
             counter = 0;
@@ -126,7 +134,7 @@ namespace Schneedetektion.ImagePlayGround
             // Live
             // webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + selectedCamera + "/live.jpg", fileName);
             // Offline
-            File.Copy(Directory.GetFiles(sourcefolderName + "\\live\\" + selectedCamera + "\\20160112\\")[counter], downloadedFilePath);
+            File.Copy(Directory.GetFiles(sourcefolderName + "\\live\\" + selectedCamera + "\\20160113\\")[counter], downloadedFilePath);
 
             // Heruntergeladenes Bild hinzufügen
             Data.Image downloadedImage = new Data.Image(downloadedFilePath);
@@ -208,8 +216,46 @@ namespace Schneedetektion.ImagePlayGround
                 {
                     ProgressBar.Value = 0;
                     timer.Stop();
+                    DetectSnow();
                 }
             }
+        }
+
+        private void DetectSnow()
+        {
+            // Bild in Regionen aueinanderschneiden
+            foreach (Polygon polygon in polygons)
+            {
+                PointCollection pointCollection = JsonConvert.DeserializeObject<PointCollection>(polygon.PolygonPointCollection);
+                
+                string maskedImagePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_C_" + polygon.ImageArea + ".png";
+                openCVHelper.GetMaskedImage(candidate.FilePath, pointCollection, maskedImagePath);
+
+                Data.Image maskedImage = new Data.Image(maskedImagePath);
+                maskedImage.Brush = Brushes.RosyBrown;
+                if (!string.IsNullOrEmpty(polygon.BgrSnow) && !string.IsNullOrEmpty(polygon.BgrNormal))
+                {
+                    maskedImage.Snow = openCVHelper.Calculate(maskedImage.FilePath, polygon, pointCollection);
+                    maskedImage.ShowResult = true;
+                }
+                maskedImages.Add(maskedImage);
+                shownImages.Add(maskedImage);
+            }
+
+
+            string resultFilePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_result.jpg";
+            File.Copy(candidate.FilePath, resultFilePath);
+            Data.Image result = new Data.Image(resultFilePath);
+            result.Brush = Brushes.Gold;
+
+            int snow = maskedImages.Count(i => i.Snow == 1);
+            int notSnow = maskedImages.Count(i => i.Snow == 0);
+            int dontKnow = maskedImages.Count(i => i.Snow == -1);
+            if (snow > notSnow) result.Snow = 1;
+            if (snow < dontKnow && notSnow < notSnow) result.Snow = -1;
+
+            result.ShowResult = true;
+            shownImages.Add(result);
         }
         #endregion
     }

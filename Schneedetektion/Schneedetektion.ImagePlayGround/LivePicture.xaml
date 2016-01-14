@@ -6,6 +6,7 @@
 
     <UserControl.Resources>
         <local:SizeConverter x:Key="SizeConverter" />
+        <local:VisibilityConverter x:Key="VisibilityConverter" />
     </UserControl.Resources>
 
     <DockPanel>
@@ -32,6 +33,9 @@
                                        FontSize="{Binding ElementName=livePicture, Path=ImageSize, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
                             <TextBlock Text="{Binding CoverageText}" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="Aquamarine"
                                        FontSize="{Binding ElementName=livePicture, Path=ImageSize, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
+                            <Image Source="{Binding ResultIconSource}" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                       Width="{Binding ElementName=livePicture, Path=ImageSize, Converter={StaticResource SizeConverter}, ConverterParameter=10}"
+                                       Visibility="{Binding ShowResult, Converter={StaticResource VisibilityConverter}}" />
                         </Grid>
                     </Border>
                 </DataTemplate>

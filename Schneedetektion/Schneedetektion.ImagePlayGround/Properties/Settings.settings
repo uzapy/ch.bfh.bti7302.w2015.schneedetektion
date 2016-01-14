@@ -8,5 +8,8 @@
     <Setting Name="BurstFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Users\uzapy\Desktop\astra\burst</Value>
     </Setting>
+    <Setting Name="PresentationFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\uzapy\Desktop\astra\presentation</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

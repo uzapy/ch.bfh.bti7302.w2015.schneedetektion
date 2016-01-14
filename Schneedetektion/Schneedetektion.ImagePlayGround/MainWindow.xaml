@@ -118,6 +118,9 @@
             <TabItem Header="Get optimal picture">
                 <local:OptimalPicture ImageSize="{Binding ElementName=slider0, Path=Value}" />
             </TabItem>
+            <TabItem Header="Process live picture">
+                <local:LivePicture ImageSize="{Binding ElementName=slider0, Path=Value}" />
+            </TabItem>
         </TabControl>
         <Button x:Name="button" Content="Apply Filter" HorizontalAlignment="Left" Margin="10,660,0,0" VerticalAlignment="Top" Width="122" Height="25" Click="button_Click" />
     </Grid>

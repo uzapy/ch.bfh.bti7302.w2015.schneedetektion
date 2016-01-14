@@ -90,12 +90,19 @@
     </ApplicationDefinition>
     <Compile Include="Candidate.cs" />
     <Compile Include="ImageHelper.cs" />
+    <Compile Include="LivePicture.xaml.cs">
+      <DependentUpon>LivePicture.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OptimalPicture.xaml.cs">
       <DependentUpon>OptimalPicture.xaml</DependentUpon>
     </Compile>
     <Compile Include="PolygonHelper.cs" />
     <Compile Include="SizeConverter.cs" />
     <Compile Include="VisibilityConverter.cs" />
+    <Page Include="LivePicture.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

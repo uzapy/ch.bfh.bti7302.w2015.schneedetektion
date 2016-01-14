@@ -14,6 +14,7 @@ namespace Schneedetektion.ImagePlayGround
 {
     internal class ImageHelper
     {
+        #region Fields
         OpenCVHelper openCVHelper = new OpenCVHelper();
         private static string folderName = Settings.Default.WorkingFolder;
         private static string burstFolderName = Settings.Default.BurstFolder;
@@ -24,6 +25,7 @@ namespace Schneedetektion.ImagePlayGround
         private Image result = new Image();
         private Image resultMask = new Image();
         private static int counter = 0;
+        #endregion
 
         #region Masking
         public List<string> ActiveMasks
@@ -229,7 +231,7 @@ namespace Schneedetektion.ImagePlayGround
                 
                 if (resultMask.Coverage < 0.4)
                 {
-                    if(i > 2)
+                    if(i > 3)
                     {
                         break;
                     }

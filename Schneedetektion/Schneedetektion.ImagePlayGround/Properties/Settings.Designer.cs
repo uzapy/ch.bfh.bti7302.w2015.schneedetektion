@@ -46,5 +46,17 @@ namespace Schneedetektion.ImagePlayGround.Properties {
                 this["BurstFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\uzapy\\Desktop\\astra\\presentation")]
+        public string PresentationFolder {
+            get {
+                return ((string)(this["PresentationFolder"]));
+            }
+            set {
+                this["PresentationFolder"] = value;
+            }
+        }
     }
 }

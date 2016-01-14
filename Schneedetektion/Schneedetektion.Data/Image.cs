@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Schneedetektion.Data
@@ -12,6 +13,7 @@ namespace Schneedetektion.Data
 
         private BitmapImage bitmap;
         private string imageFileName;
+        private string fileExtension;
 
         public Image(string imageFileName, string burstFolder = null)
         {
@@ -25,6 +27,7 @@ namespace Schneedetektion.Data
             int minutes = Int32.Parse(Name.Substring(18, 2));
             int seconds = Int32.Parse(Name.Substring(20, 2));
             DateTime = new DateTime(year, month, day, hour, minutes, seconds);
+            fileExtension = Path.GetExtension(imageFileName);
 
             if (!String.IsNullOrEmpty(burstFolder))
             {
@@ -51,7 +54,7 @@ namespace Schneedetektion.Data
                         }
                         else
                         {
-                            bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name + ".jpg"));
+                            bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name + fileExtension));
                         }
                     }
                     catch (Exception)
@@ -86,6 +89,18 @@ namespace Schneedetektion.Data
 
         public double Coverage { get; set; }
 
-        public string CoverageText { get { return Coverage.ToString("0.00") + "%"; } }
+        public int Counter { get; set; }
+
+        public Brush Brush { get; set; }
+
+        public string CoverageText
+        {
+            get
+            {
+                return Coverage != 0d ? Coverage.ToString("0.00") + "%" : String.Empty;
+            }
+        }
+
+        public string FilePath { get { return imageFileName; } }
     }
 }

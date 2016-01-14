@@ -142,20 +142,24 @@ namespace Schneedetektion.GatherData
             {
                 foreach (var cameraName in cameraNames)
                 {
-                    if (!Directory.Exists("C:\\Users\\bublic\\Desktop\\astra\\" + cameraName + "\\20160112"))
+                    if (!Directory.Exists("C:\\Users\\uzapy\\Desktop\\astra\\live\\" + cameraName + "\\20160113"))
                     {
-                        Directory.CreateDirectory("C:\\Users\\bublic\\Desktop\\astra\\" + cameraName + "\\20160112");
+                        Directory.CreateDirectory("C:\\Users\\uzapy\\Desktop\\astra\\live\\" + cameraName + "\\20160113");
                     }
 
-                    string imageFullPath = "C:\\Users\\bublic\\Desktop\\astra\\" + cameraName + "\\20160112\\"
-                        + cameraName + "_20160112_" + DateTime.Now.ToString("hhmmss") + ".jpg";
+                    string imageFullPath = "C:\\Users\\uzapy\\Desktop\\astra\\live\\" + cameraName + "\\20160113\\"
+                        + cameraName + "_20160113_" + DateTime.Now.ToString("HHmmss") + ".jpg";
 
 
                     webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + cameraName + "/live.jpg", imageFullPath);
 
                     Console.WriteLine(imageFullPath);
+
+                    System.Threading.Thread.Sleep(1000);
                 }
             }
+
+            Console.ReadLine();
         }
     }
 }

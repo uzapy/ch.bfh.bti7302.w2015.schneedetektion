@@ -74,6 +74,41 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(incomplete.Bitmap);
         }
 
+        public void FillMaskHoles(string maskPath0, string maskPath1, string newImagePath, string incompleteImagePath, string resultPath)
+        {
+            Image<Bgr, byte> mask0 = new Image<Bgr, byte>(maskPath0);
+            Image<Bgr, byte> mask1 = new Image<Bgr, byte>(maskPath1);
+            Image<Bgr, byte> new0 = new Image<Bgr, byte>(newImagePath);
+            Image<Bgr, byte> incomplete = new Image<Bgr, byte>(incompleteImagePath);
+
+            Image<Bgr, byte> resultMask = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
+            for (int i = 0; i < mask0.Cols; i++)
+            {
+                for (int j = 0; j < mask0.Rows; j++)
+                {
+                    if (mask0.Data[j, i, 0] == 0 && mask0.Data[j, i, 1] == 0 && mask0.Data[j, i, 2] == 0 &&
+                        mask1.Data[j, i, 0] == 255 && mask1.Data[j, i, 1] == 255 && mask1.Data[j, i, 2] == 255)
+                    {
+                        resultMask.Data[j, i, 0] = 0;
+                        resultMask.Data[j, i, 1] = 0;
+                        resultMask.Data[j, i, 2] = 0;
+                    }
+                    else
+                    {
+                        resultMask.Data[j, i, 0] = 255;
+                        resultMask.Data[j, i, 1] = 255;
+                        resultMask.Data[j, i, 2] = 255;
+                    }
+                }
+            }
+            resultMask._Not();
+
+            CvInvoke.cvCopy(new0, incomplete, resultMask);
+
+            incomplete.Save(resultPath);
+        }
+
         public BitmapImage GetBlackArea(BitmapImage bitmap0, BitmapImage bitmap1)
         {
             Image<Bgr, byte> image0 = new Image<Bgr, byte>(BitmapImageToBitmap(bitmap0));
@@ -222,7 +257,7 @@ namespace Schneedetektion.OpenCV
             Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
             result1 = image0.AbsDiff(image1);
-            result1._ThresholdBinaryInv(new Bgr(75, 75, 75), new Bgr(255, 255, 255));
+            result1._ThresholdBinaryInv(new Bgr(50, 50, 50), new Bgr(255, 255, 255));
             CvInvoke.CvtColor(result1, result1, ColorConversion.Bgr2Gray);
 
             return BitmapToBitmapImage(result1.Bitmap);
@@ -262,6 +297,39 @@ namespace Schneedetektion.OpenCV
             }
 
             return BitmapToBitmapImage(result1.Bitmap);
+        }
+
+        public void CalculateAbsoluteDifference(string imagePath0, string imagePath1, string resultPath)
+        {
+            Image<Bgr, byte> image0 = new Image<Bgr, byte>(imagePath0);
+            Image<Bgr, byte> image1 = new Image<Bgr, byte>(imagePath1);
+
+            Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
+            result1 = image0.AbsDiff(image1); // Absolute Differenz
+            result1._ThresholdBinaryInv(new Bgr(50, 50, 50), new Bgr(255, 255, 255)); // Threshholden und Invertieren
+            result1._Erode(3); // Macht die schwarze Fläche grösser
+
+            for (int i = 0; i < result1.Cols; i++)
+            {
+                for (int j = 0; j < result1.Rows; j++)
+                {
+                    if (result1.Data[j, i, 0] < 50 && result1.Data[j, i, 1] < 50 && result1.Data[j, i, 2] < 50)
+                    {
+                        result1.Data[j, i, 0] = 0;
+                        result1.Data[j, i, 1] = 0;
+                        result1.Data[j, i, 2] = 0;
+                    }
+                    else
+                    {
+                        result1.Data[j, i, 0] = 255;
+                        result1.Data[j, i, 1] = 255;
+                        result1.Data[j, i, 2] = 255;
+                    }
+                }
+            }
+
+            result1.Save(resultPath);
         }
 
         public BitmapImage CalculateIntesection(BitmapImage bitmapImage0, BitmapImage bitmapImage1)
@@ -310,6 +378,22 @@ namespace Schneedetektion.OpenCV
 
         private double CountBlackArea(Image<Bgr, byte> image)
         {
+            int total = image.Cols * image.Rows;
+            int black = 0;
+            for (int i = 0; i < image.Cols; i++)
+            {
+                for (int j = 0; j < image.Rows; j++)
+                {
+                    if (image.Data[j, i, 0] < 10 && image.Data[j, i, 1] < 10 && image.Data[j, i, 2] < 10) black++;
+                }
+            }
+            return 100d / (double)total * (double)black;
+        }
+
+        public double CountBlackArea(string filePath)
+        {
+            Image<Bgr, byte> image = new Image<Bgr, byte>(filePath);
+            
             int total = image.Cols * image.Rows;
             int black = 0;
             for (int i = 0; i < image.Cols; i++)

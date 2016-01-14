@@ -4,6 +4,7 @@ using Schneedetektion.OpenCV;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Windows;
@@ -17,6 +18,7 @@ namespace Schneedetektion.ImagePlayGround
     {
         #region Fields
         private static readonly DependencyProperty ImageSizeProperty = DependencyProperty.Register("ImageSize", typeof(Double), typeof(LivePicture));
+        private static string sourcefolderName = Settings.Default.WorkingFolder;
         private static string folderName = Settings.Default.PresentationFolder;
         private static int counter = 0;
 
@@ -29,8 +31,8 @@ namespace Schneedetektion.ImagePlayGround
         private List<Data.Image> downloadedImages = new List<Data.Image>();
         private List<Data.Image> differenceImages = new List<Data.Image>();
         private ObservableCollection<Data.Image> shownImages = new ObservableCollection<Data.Image>();
-        private Data.Image result;
-        private Data.Image resultMask;
+        private Data.Image candidate;
+        private Data.Image candidateMask;
 
         private DispatcherTimer timer = new DispatcherTimer();
 
@@ -106,13 +108,6 @@ namespace Schneedetektion.ImagePlayGround
             downloadedImages.Clear();
             shownImages.Clear();
 
-            // Alle Dateien löschen
-            //DirectoryInfo directoryInfo = new DirectoryInfo(folderName);
-            //foreach (FileInfo file in directoryInfo.GetFiles())
-            //{
-            //    file.Delete();
-            //}
-
             // Counter zurücksetzen
             counter = 0;
 
@@ -126,11 +121,15 @@ namespace Schneedetektion.ImagePlayGround
         private void GetLivePicture()
         {
             // Livebild herunterladen
-            string fileName = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_" + counter + ".jpg";
-            webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + selectedCamera + "/live.jpg", fileName);
+            string downloadedFilePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_" + counter + ".jpg";
+
+            // Live
+            // webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + selectedCamera + "/live.jpg", fileName);
+            // Offline
+            File.Copy(Directory.GetFiles(sourcefolderName + "\\live\\" + selectedCamera + "\\20160112\\")[counter], downloadedFilePath);
 
             // Heruntergeladenes Bild hinzufügen
-            Data.Image downloadedImage = new Data.Image(fileName);
+            Data.Image downloadedImage = new Data.Image(downloadedFilePath);
             downloadedImage.Counter = counter;
             downloadedImage.Brush = Brushes.Green;
             downloadedImages.Add(downloadedImage);
@@ -144,48 +143,71 @@ namespace Schneedetektion.ImagePlayGround
         {
             if (downloadedImages.Count > 1)
             {
-                //if (result == null || resultMask == null)
-                //{
-                //    result = new Data.Image()
-                //}
-                //result.Bitmap = openCVHelper.GetMaskedImage(differenceImage.Bitmap, image0.Bitmap);
-                //resultMask.Bitmap = diffCandidates.First().DifferenceImage.Bitmap;
-
                 // Letzte 2 Bilder auswählen
                 Data.Image image0 = downloadedImages[downloadedImages.Count - 2];
                 Data.Image image1 = downloadedImages.Last();
 
-                string difference = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_" +
+                string differencePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_" +
                     image0.Counter + "+" + image1.Counter + ".png";
 
                 // Differenz ausrechnen
-                openCVHelper.CalculateAbsoluteDifference(image0.FilePath, image1.FilePath, difference);
+                openCVHelper.CalculateAbsoluteDifference(image0.FilePath, image1.FilePath, differencePath);
 
                 // Differenz speichern
-                Data.Image newImage = new Data.Image(difference);
-                newImage.Coverage = openCVHelper.CountBlackArea(difference);
-                newImage.Brush = Brushes.Yellow;
-                differenceImages.Add(newImage);
-                shownImages.Add(newImage);
+                Data.Image difference = new Data.Image(differencePath);
+                difference.Coverage = openCVHelper.CountBlackArea(differencePath);
+                difference.Brush = Brushes.Yellow;
+                differenceImages.Add(difference);
+                shownImages.Add(difference);
 
-                // Löcher im ersten Bild auffüllen
+                if (candidate == null || candidateMask == null)
+                {
+                    // Kandidat speichern
+                    string candidatePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_C.png";
+                    openCVHelper.GetMaskedImage(downloadedImages.First().FilePath, differenceImages.First().FilePath, candidatePath);
+                    candidate = new Data.Image(candidatePath);
+                    candidate.Coverage = openCVHelper.CountBlackArea(candidatePath);
+                    candidate.Brush = Brushes.Cyan;
+                    shownImages.Add(candidate);
+
+                    // 1. Kandidaten Maske speichern
+                    string candidateMaskPath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_M.png";
+                    File.Copy(differenceImages.First().FilePath, candidateMaskPath);
+                    candidateMask = new Data.Image(candidateMaskPath);
+                    candidateMask.Coverage = openCVHelper.CountBlackArea(candidateMask.FilePath);
+                    candidateMask.Brush = Brushes.Magenta;
+                    shownImages.Add(candidateMask);
+                }
+
                 if (differenceImages.Count > 1)
                 {
-                    // Get Masked Image (einmalig)
-                    // Get First Mask
+                    // Löcher im ersten Bild auffüllen
+                    Data.Image lastDifference = differenceImages.Last();
+                    string filledNewImagePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_C.png";
 
-                    Data.Image difference0 = differenceImages[downloadedImages.Count - 2];
-                    Data.Image difference1 = differenceImages.Last();
-                    string filledNewImagePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_" + counter + ".png";
+                    openCVHelper.FillMaskHoles(candidateMask.FilePath, lastDifference.FilePath,
+                        downloadedImages.Last().FilePath, candidate.FilePath, filledNewImagePath);
 
-                    openCVHelper.FillMaskHoles(difference0.FilePath, difference1.FilePath, image1.FilePath, downloadedImages.First().FilePath, filledNewImagePath);
+                    candidate = new Data.Image(filledNewImagePath);
+                    candidate.Coverage = openCVHelper.CountBlackArea(filledNewImagePath);
+                    candidate.Brush = Brushes.Cyan;
+                    shownImages.Add(candidate);
 
-                    Data.Image filledNewImage = new Data.Image(filledNewImagePath);
-                    filledNewImage.Counter = counter;
-                    filledNewImage.Brush = Brushes.Orange;
-                    // downloadedImages.Add(filledNewImage);
-                    shownImages.Add(filledNewImage);
-                    counter++;
+                    // Kandidaten Maske aktualisieren
+                    string candidateMaskPath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_M.png";
+
+                    openCVHelper.GetBlackArea(candidate.FilePath, candidateMask.FilePath, candidateMaskPath);
+
+                    candidateMask = new Data.Image(candidateMaskPath);
+                    candidateMask.Coverage = openCVHelper.CountBlackArea(candidateMask.FilePath);
+                    candidateMask.Brush = Brushes.Magenta;
+                    shownImages.Add(candidateMask);
+                }
+
+                if (candidateMask.Coverage < 1)
+                {
+                    ProgressBar.Value = 0;
+                    timer.Stop();
                 }
             }
         }

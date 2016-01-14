@@ -39,6 +39,17 @@ namespace Schneedetektion.OpenCV
             return BitmapToBitmapImage(result.Bitmap);
         }
 
+        public void GetMaskedImage(string imagePath, string maskPath, string resultPath)
+        {
+            Image<Bgr, byte> image = new Image<Bgr, byte>(imagePath);
+            Image<Bgr, byte> mask = new Image<Bgr, byte>(maskPath);
+            Image<Bgr, byte> result = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
+            CvInvoke.cvCopy(image, result, mask);
+
+            result.Save(resultPath);
+        }
+
         public BitmapImage FillMaskHoles(BitmapImage imageMask0, BitmapImage imageMask1, BitmapImage newImage, BitmapImage incompleteImage)
         {
             Image<Bgr, byte> mask0 = new Image<Bgr, byte>(BitmapImageToBitmap(imageMask0));
@@ -137,6 +148,36 @@ namespace Schneedetektion.OpenCV
             }
 
             return BitmapToBitmapImage(resultMask.Bitmap);
+        }
+
+        public void GetBlackArea(string imagePath, string maskPath, string resultPath)
+        {
+            Image<Bgr, byte> image = new Image<Bgr, byte>(imagePath);
+            Image<Bgr, byte> mask = new Image<Bgr, byte>(maskPath);
+
+            Image<Bgr, byte> resultMask = new Image<Bgr, byte>(new byte[288, 352, 3]);
+
+            for (int i = 0; i < image.Cols; i++)
+            {
+                for (int j = 0; j < image.Rows; j++)
+                {
+                    if (image.Data[j, i, 0] == 0 && image.Data[j, i, 1] == 0 && image.Data[j, i, 2] == 0 &&
+                        !(mask.Data[j, i, 0] == 255 && mask.Data[j, i, 1] == 255 && mask.Data[j, i, 2] == 255))
+                    {
+                        resultMask.Data[j, i, 0] = 0;
+                        resultMask.Data[j, i, 1] = 0;
+                        resultMask.Data[j, i, 2] = 0;
+                    }
+                    else
+                    {
+                        resultMask.Data[j, i, 0] = 255;
+                        resultMask.Data[j, i, 1] = 255;
+                        resultMask.Data[j, i, 2] = 255;
+                    }
+                }
+            }
+
+            resultMask.Save(resultPath);
         }
 
         private Drawing.Bitmap GetMaskedBitmap(string imagePath, IList<Point> pointCollection)
@@ -508,3 +549,4 @@ namespace Schneedetektion.OpenCV
         }
     }
 }
+

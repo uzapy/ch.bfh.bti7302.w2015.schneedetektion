@@ -41,7 +41,7 @@ namespace Schneedetektion.ImagePlayGround
             polygonCanvas.Children.Add(polygon);
         }
 
-        internal void loadSavedPolygons(Data.Image selectedImage)
+        internal void loadSavedPolygons(Data.Image selectedImage, double height, double width)
         {
             selectedCamera = selectedImage.Place;
 
@@ -56,7 +56,7 @@ namespace Schneedetektion.ImagePlayGround
                 polygonCanvas.Children.Add(polygon);
                 foreach (Point point in JsonConvert.DeserializeObject<PointCollection>(dbPolygon.PolygonPointCollection))
                 {
-                    polygon.Points.Add(new Point(point.X * dbPolygon.ImageWidth.Value, point.Y * dbPolygon.ImageHeight.Value));
+                    polygon.Points.Add(new Point(point.X * height, point.Y * width));
                 }
             }
         }

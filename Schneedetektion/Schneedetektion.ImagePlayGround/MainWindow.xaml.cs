@@ -139,7 +139,7 @@ namespace Schneedetektion.ImagePlayGround
                 if (selectedImage?.Place != images[imageContainer.SelectedIndex].Place)
                 {
                     selectedImage = images[imageContainer.SelectedIndex];
-                    polygonHelper.loadSavedPolygons(selectedImage);
+                    polygonHelper.loadSavedPolygons(selectedImage, maskToolImage.ActualWidth, maskToolImage.ActualHeight);
                     selectedCameraName.Text = "Camera: " + selectedImage.Place;
                 }
 
@@ -208,8 +208,10 @@ namespace Schneedetektion.ImagePlayGround
 
         private void maskToolImage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            imageWidth.Text = "W: " + maskToolImage.ActualWidth.ToString("0:00");
-            imageHeight.Text = "H: " + maskToolImage.ActualHeight.ToString("0:00");
+            imageWidth.Text = "W: " + maskToolImage.ActualWidth.ToString("0.00");
+            imageHeight.Text = "H: " + maskToolImage.ActualHeight.ToString("0.00");
+
+            polygonHelper.loadSavedPolygons(selectedImage, maskToolImage.ActualWidth, maskToolImage.ActualHeight);
         }
 
         private void polygonCanvas_MouseMove(object sender, MouseEventArgs e)

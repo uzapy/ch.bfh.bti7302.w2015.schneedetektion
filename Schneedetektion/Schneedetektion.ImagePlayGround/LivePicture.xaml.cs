@@ -132,9 +132,9 @@ namespace Schneedetektion.ImagePlayGround
             string downloadedFilePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_" + counter + ".jpg";
 
             // Live
-            // webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + selectedCamera + "/live.jpg", fileName);
+            webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + selectedCamera + "/live.jpg", downloadedFilePath);
             // Offline
-            File.Copy(Directory.GetFiles(sourcefolderName + "\\live\\" + selectedCamera + "\\20160113\\")[counter], downloadedFilePath);
+            // File.Copy(Directory.GetFiles(sourcefolderName + "\\live\\" + selectedCamera + "\\20160113\\")[counter], downloadedFilePath);
 
             // Heruntergeladenes Bild hinzufügen
             Data.Image downloadedImage = new Data.Image(downloadedFilePath);
@@ -251,8 +251,8 @@ namespace Schneedetektion.ImagePlayGround
             int snow = maskedImages.Count(i => i.Snow == 1);
             int notSnow = maskedImages.Count(i => i.Snow == 0);
             int dontKnow = maskedImages.Count(i => i.Snow == -1);
-            if (snow > notSnow) result.Snow = 1;
-            if (snow < dontKnow && notSnow < notSnow) result.Snow = -1;
+            if (snow > notSnow && snow >= dontKnow) result.Snow = 1;
+            if (notSnow > snow && notSnow >= dontKnow) result.Snow = -1;
 
             result.ShowResult = true;
             shownImages.Add(result);

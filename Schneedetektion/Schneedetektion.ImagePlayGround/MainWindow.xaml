@@ -27,7 +27,7 @@
         <GroupBox x:Name="groupBox3" Header="Size" HorizontalAlignment="Left" Margin="10,362,0,0" VerticalAlignment="Top">
             <Slider x:Name="slider0" HorizontalAlignment="Left" Width="110" VerticalAlignment="Top" TabIndex="5" Maximum="800" Minimum="50" LargeChange="1" Value="50"/>
         </GroupBox>
-        <GroupBox x:Name="groupBox4" Header="Apply Masks" HorizontalAlignment="Left" Margin="10,408,0,0" VerticalAlignment="Top">
+        <GroupBox x:Name="groupBox4" Header="Apply Masks" HorizontalAlignment="Left" Margin="10,438,0,0" VerticalAlignment="Top">
             <ListBox x:Name="listBox2" HorizontalAlignment="Left" Height="224" Width="110" TabIndex="6" SelectionMode="Multiple" SelectionChanged="listBox2_SelectionChanged" />
         </GroupBox>
         <TabControl Margin="138,10,0.333,9.667">
@@ -44,8 +44,8 @@
                                 <Image Grid.Row="0" Source="{Binding Bitmap}" Width="{Binding ElementName=slider0, Path=Value}" />
                                 <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Foreground="White"
                                            FontSize="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=15}" />
-                                <Image Source="{Binding ResultIconSource}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                       Width="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=10}" />
+                                <!--<Image Source="{Binding ResultIconSource}" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                       Width="{Binding ElementName=slider0, Path=Value, Converter={StaticResource SizeConverter}, ConverterParameter=10}" />-->
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -123,6 +123,6 @@
                 <local:LivePicture ImageSize="{Binding ElementName=slider0, Path=Value}" />
             </TabItem>
         </TabControl>
-        <Button x:Name="button" Content="Apply Filter" HorizontalAlignment="Left" Margin="10,660,0,0" VerticalAlignment="Top" Width="122" Height="25" Click="button_Click" />
+        <Button x:Name="button" Content="Apply Filter" HorizontalAlignment="Left" Margin="10,408,0,0" VerticalAlignment="Top" Width="122" Height="25" Click="button_Click" />
     </Grid>
 </Window>

@@ -101,6 +101,7 @@ namespace Schneedetektion.OpenCV
 
             Image<Bgr, byte> resultMask = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
+            // Neue Maske: Die unterschiede der beiden Input-Masken
             for (int i = 0; i < mask0.Cols; i++)
             {
                 for (int j = 0; j < mask0.Rows; j++)
@@ -358,6 +359,7 @@ namespace Schneedetektion.OpenCV
             result1._ThresholdBinaryInv(new Bgr(50, 50, 50), new Bgr(255, 255, 255)); // Threshholden und Invertieren
             result1._Erode(3); // Macht die schwarze Fläche grösser
 
+            // Für alle Farbkanäle gleich
             for (int i = 0; i < result1.Cols; i++)
             {
                 for (int j = 0; j < result1.Rows; j++)
@@ -515,9 +517,9 @@ namespace Schneedetektion.OpenCV
         public short Calculate(string imageFilePath, Polygon polygon, Media.PointCollection pointCollection)
         {
             // Maskiertes Bild laden
-            Drawing.Bitmap maskedBitmap = GetMaskedBitmap(imageFilePath, pointCollection);
+            // Drawing.Bitmap maskedBitmap = GetMaskedBitmap(imageFilePath, pointCollection);
 
-            Image<Bgr, byte> cvImage = new Image<Bgr, byte>(maskedBitmap);
+            Image<Bgr, byte> cvImage = new Image<Bgr, byte>(imageFilePath);
 
             // Maske generieren aus Polygon
             Mat matMask = new Mat(new Drawing.Size(cvImage.Cols, cvImage.Rows), DepthType.Cv8U, 3);

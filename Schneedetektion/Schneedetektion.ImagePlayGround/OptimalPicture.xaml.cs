@@ -29,10 +29,13 @@ namespace Schneedetektion.ImagePlayGround
             Days.ItemsSource = days;
             ImageContainer.ItemsSource = selectedImages;
 
-            string[] fullFolderNames = Directory.GetDirectories(burstFolder);
-            foreach (string f in fullFolderNames)
+            if (Directory.Exists(burstFolder))
             {
-                folders.Add(new DirectoryInfo(f).Name);
+                string[] fullFolderNames = Directory.GetDirectories(burstFolder);
+                foreach (string f in fullFolderNames)
+                {
+                    folders.Add(new DirectoryInfo(f).Name);
+                } 
             }
         }
 

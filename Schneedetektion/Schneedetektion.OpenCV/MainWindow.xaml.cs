@@ -15,10 +15,10 @@ namespace Schneedetektion.OpenCV
 
         string imagePath0 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_080002.jpg";
         string imagePath1 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_081001.jpg";
-        string imagePath2 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_082002.jpg";
-        string imagePath3 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_083001.jpg";
-        string imagePath4 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_084001.jpg";
-        string imagePath5 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_085001.jpg";
+        //string imagePath2 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_082002.jpg";
+        //string imagePath3 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_083001.jpg";
+        //string imagePath4 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_084001.jpg";
+        //string imagePath5 = @"C:\Users\uzapy\Desktop\astra\mvk101\20141204\mvk101_20141204_085001.jpg";
 
         //string reference0 = @"C:\Users\uzapy\Desktop\astra\mvk021\20141229\mvk021_20141229_142002.jpg"; // Snow
         //string reference1 = @"C:\Users\uzapy\Desktop\astra\mvk021\20150316\mvk021_20150316_142001.jpg"; // Not Snow

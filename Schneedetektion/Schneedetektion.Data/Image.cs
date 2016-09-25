@@ -48,13 +48,27 @@ namespace Schneedetektion.Data
                 {
                     try
                     {
-                        if (Directory.Exists(folderName + "\\" + Place + "\\" + Name.Substring(7, 8)))
+                        if (Directory.Exists(folderName))
                         {
-                            bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name.Substring(7, 8) + "\\" + Name + ".jpg"));
+                            if (Directory.Exists(folderName + "\\" + Place + "\\" + Name.Substring(7, 8)))
+                            {
+                                bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name.Substring(7, 8) + "\\" + Name + ".jpg"));
+                            }
+                            else
+                            {
+                                bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name + fileExtension));
+                            }
                         }
                         else
                         {
-                            bitmap = new BitmapImage(new Uri(folderName + "\\" + Place + "\\" + Name + fileExtension));
+                            if (Directory.Exists(Path.GetDirectoryName(imageFileName)))
+                            {
+                                bitmap = new BitmapImage(new Uri(imageFileName));
+                            }
+                            else
+                            {
+                                bitmap = new BitmapImage();
+                            }
                         }
                     }
                     catch (Exception)

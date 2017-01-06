@@ -132,9 +132,9 @@ namespace Schneedetektion.ImagePlayGround
             string downloadedFilePath = folderName + "\\" + selectedCamera + "_" + DateTime.Now.ToString("yyyMMdd_HHmmss") + "_" + counter + ".jpg";
 
             // Live
-            webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + selectedCamera + "/live.jpg", downloadedFilePath);
+            //webClient.DownloadFile("http://www.astramobcam.ch/kamera/" + selectedCamera + "/live.jpg", downloadedFilePath);
             // Offline
-            // File.Copy(Directory.GetFiles(sourcefolderName + "\\live\\" + selectedCamera + "\\20160113\\")[counter], downloadedFilePath);
+            File.Copy(Directory.GetFiles(sourcefolderName + "\\live\\" + selectedCamera + "\\20160113\\")[counter], downloadedFilePath);
 
             // Heruntergeladenes Bild hinzufügen
             Data.Image downloadedImage = new Data.Image(downloadedFilePath);

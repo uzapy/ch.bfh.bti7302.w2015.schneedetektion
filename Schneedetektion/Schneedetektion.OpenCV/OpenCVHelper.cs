@@ -350,14 +350,19 @@ namespace Schneedetektion.OpenCV
 
         public void CalculateAbsoluteDifference(string imagePath0, string imagePath1, string resultPath)
         {
+            // Bilder einlesen
             Image<Bgr, byte> image0 = new Image<Bgr, byte>(imagePath0);
             Image<Bgr, byte> image1 = new Image<Bgr, byte>(imagePath1);
 
+            // Neues, leeres Bild erzeugen
             Image<Bgr, byte> result1 = new Image<Bgr, byte>(new byte[288, 352, 3]);
 
-            result1 = image0.AbsDiff(image1); // Absolute Differenz
-            result1._ThresholdBinaryInv(new Bgr(50, 50, 50), new Bgr(255, 255, 255)); // Threshholden und Invertieren
-            result1._Erode(3); // Macht die schwarze Fläche grösser
+            // Absolute Differenz der beiden Bilder berechnen
+            result1 = image0.AbsDiff(image1);
+            // Threshholden und Invertieren
+            result1._ThresholdBinaryInv(new Bgr(50, 50, 50), new Bgr(255, 255, 255));
+            // Schwarze Fläche grösser machen per Erosions-Operation
+            result1._Erode(3);
 
             // Für alle Farbkanäle gleich
             for (int i = 0; i < result1.Cols; i++)
@@ -379,6 +384,7 @@ namespace Schneedetektion.OpenCV
                 }
             }
 
+            // Differenz der Bilder in neuem Bild abspeichern
             result1.Save(resultPath);
         }
 
@@ -540,14 +546,20 @@ namespace Schneedetektion.OpenCV
             Bgr snow = JsonConvert.DeserializeObject<Bgr>(polygon.BgrSnow);
             Bgr normal = JsonConvert.DeserializeObject<Bgr>(polygon.BgrNormal);
 
-            double resultSnow = Math.Abs(snow.Blue - result.Blue) + Math.Abs(snow.Green - result.Green) + Math.Abs(snow.Red - result.Red);
-            double resultNormal = Math.Abs(normal.Blue - result.Blue) + Math.Abs(normal.Green - result.Green) + Math.Abs(normal.Red - result.Red);
+            double distanceToSnow = Math.Sqrt(
+                Math.Pow(snow.Blue - result.Blue, 2) +
+                Math.Pow(snow.Green - result.Green, 2) +
+                Math.Pow(snow.Red - result.Red, 2));
+            double distanceToNotSnow = Math.Sqrt(
+                Math.Pow(normal.Blue - result.Blue, 2) +
+                Math.Pow(normal.Green - result.Green, 2) +
+                Math.Pow(normal.Red - result.Red, 2));
 
-            if (Math.Abs(resultSnow - resultNormal) < 10)
+            if (Math.Abs(distanceToSnow - distanceToNotSnow) < 10)
             {
                 return 0;
             }
-            else if (resultSnow < resultNormal)
+            else if (distanceToSnow < distanceToNotSnow)
             {
                 return 1;
             }
